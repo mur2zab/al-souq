@@ -1,0 +1,25 @@
+{
+  "users": [
+    {
+      "id": "admin-1",
+      "email": "admin@alsouq.community",
+      "phone": "+919820000001",
+      "fullName": "Community Admin",
+      "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80",
+      "itsNumber": "10000001",
+      "verificationStatus": "VERIFIED",
+      "cityId": "mumbai",
+      "cityName": "Mumbai",
+      "mohallaName": "Mazgaon (Central Jamaat Desk)",
+      "role": "ADMIN",
+      "createdAt": "2026-11-14T15:24:05.424Z",
+      "passwordHash": "6a904217430e8a32b5722810f892da12:4bf514f99fba89aa1f55b7bbabd63049a0a110efcd0706f0ffc5b04f2121b5024ff73370b65693688d3b00e65a68be8e9764bdeab2c0765f8661c846993c826f"
+    }
+  ],
+  "businesses": [],
+  "posts": [],
+  "stories": [],
+  "classifieds": [],
+  "leads": [],
+  "verifications": []
+}

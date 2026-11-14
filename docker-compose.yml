@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: alsouq-web
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=production
+      - SESSION_SECRET=alsouq_production_secure_secret_key_change_me
+      - DATABASE_URL=postgresql://alsouq_user:alsouq_password@postgres:5432/alsouq_db?schema=public
+    volumes:
+      - alsouq_data:/app/.data
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: alsouq-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: alsouq_user
+      POSTGRES_PASSWORD: alsouq_password
+      POSTGRES_DB: alsouq_db
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  alsouq_data:
+  postgres_data:

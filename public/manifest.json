@@ -1,0 +1,21 @@
+{
+  "name": "Al-Souq (السوق) – Bohra Community Marketplace",
+  "short_name": "Al-Souq",
+  "description": "Visual Commerce & High-Trust Classifieds Platform for the Dawoodi Bohra Community",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF8F5",
+  "theme_color": "#09332A",
+  "icons": [
+    {
+      "src": "https://images.unsplash.com/photo-1541544741938-0af808871cc0?auto=format&fit=crop&w=192&q=80",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1541544741938-0af808871cc0?auto=format&fit=crop&w=512&q=80",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

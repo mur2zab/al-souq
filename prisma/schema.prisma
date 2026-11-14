@@ -1,0 +1,224 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum VerificationStatus {
+  UNVERIFIED
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum UserRole {
+  MEMBER
+  CREATOR_BUSINESS
+  ADMIN
+}
+
+enum BusinessCategory {
+  FOOD_CATERING
+  RIDA_FASHION
+  KHATT_ART
+  GIFTING_DECOR
+  B2B_TRADE
+  TRAVEL_ZIYARAT
+  SERVICES
+}
+
+enum SubscriptionTier {
+  FREE
+  PRO_FEATURED
+}
+
+enum PostType {
+  PHOTO_CAROUSEL
+  REEL_VIDEO
+  DAILY_DROP_STORY
+}
+
+enum ClassifiedCategory {
+  REAL_ESTATE_RENT
+  REAL_ESTATE_SALE
+  PG_FLATMATE
+  HOME_CLEARANCE_FURNITURE
+  COMMERCIAL_EQUIPMENT
+  BABY_KIDS
+  JOBS
+}
+
+enum ItemCondition {
+  NEW
+  LIKE_NEW
+  GOOD
+  FAIR
+  NOT_APPLICABLE
+}
+
+enum ListingStatus {
+  ACTIVE
+  SOLD
+  EXPIRED
+}
+
+model City {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  country     String
+  localities  Json     // Array of mohallas: ["Mazgaon", "Bhendi Bazaar", "Marol"]
+  users       User[]
+  businesses  BusinessProfile[]
+  posts       FeedPost[]
+  classifieds ClassifiedListing[]
+
+  @@map("cities")
+}
+
+model User {
+  id                 String             @id @default(uuid())
+  email              String             @unique
+  phone              String
+  fullName           String             @map("full_name")
+  avatarUrl          String?            @map("avatar_url")
+  itsNumber          String?            @unique @map("its_number") // VARCHAR(8), Unique, Indexed
+  verificationStatus VerificationStatus @default(UNVERIFIED) @map("verification_status")
+  itsCardProofUrl    String?            @map("its_card_proof_url") // Private S3 object key
+  cityId             String             @map("city_id")
+  city               City               @relation(fields: [cityId], references: [id])
+  mohallaName        String             @map("mohalla_name") // "Mazgaon", "Saifee Park", "Bhendi Bazaar"
+  role               UserRole           @default(MEMBER)
+  createdAt          DateTime           @default(now()) @map("created_at")
+  updatedAt          DateTime           @updatedAt @map("updated_at")
+
+  businessProfiles   BusinessProfile[]
+  posts              FeedPost[]
+  classifieds        ClassifiedListing[]
+  savedItems         SavedItem[]
+
+  @@index([cityId])
+  @@index([itsNumber])
+  @@map("users")
+}
+
+model BusinessProfile {
+  id               String           @id @default(uuid())
+  userId           String           @map("user_id")
+  user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  businessName     String           @map("business_name")
+  slug             String           @unique
+  tagline          String?
+  description      String?
+  category         BusinessCategory
+  cityId           String           @map("city_id")
+  city             City             @relation(fields: [cityId], references: [id])
+  shipsGlobally    Boolean          @default(false) @map("ships_globally")
+  hasRazaBadge     Boolean          @default(false) @map("has_raza_badge")
+  subscriptionTier SubscriptionTier @default(FREE) @map("subscription_tier")
+  whatsappNumber   String           @map("whatsapp_number")
+  instagramHandle  String?          @map("instagram_handle")
+  catalogPdfUrl    String?          @map("catalog_pdf_url")
+  createdAt        DateTime         @default(now()) @map("created_at")
+  updatedAt        DateTime         @updatedAt @map("updated_at")
+
+  posts            FeedPost[]
+
+  @@index([cityId, category])
+  @@map("business_profiles")
+}
+
+model FeedPost {
+  id                  String           @id @default(uuid())
+  businessId          String           @map("business_id")
+  business            BusinessProfile  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  authorId            String           @map("author_id")
+  author              User             @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  postType            PostType         @default(PHOTO_CAROUSEL) @map("post_type")
+  mediaUrls           Json             @map("media_urls") // JSONB array of URLs, aspect ratios, thumbnails
+  caption             String           @db.Text
+  priceInr            Decimal?         @map("price_inr") @db.Decimal(10, 2)
+  isAvailableToday    Boolean          @default(false) @map("is_available_today")
+  todayDropDeadline   String?          @map("today_drop_deadline")
+  cityId              String           @map("city_id")
+  city                City             @relation(fields: [cityId], references: [id])
+  mohallaName         String           @map("mohalla_name")
+  likesCount          Int              @default(0) @map("likes_count")
+  whatsappClicksCount Int              @default(0) @map("whatsapp_clicks_count")
+  expiresAt           DateTime?        @map("expires_at") // 24h flash drops
+  createdAt           DateTime         @default(now()) @map("created_at")
+
+  savedItems          SavedItem[]
+  leadEvents          LeadEvent[]
+
+  // Fast feed query indexing required by project specification
+  @@index([cityId, createdAt(sort: Desc)])
+  @@map("feed_posts")
+}
+
+model ClassifiedListing {
+  id                  String             @id @default(uuid())
+  sellerId            String             @map("seller_id")
+  seller              User               @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  cityId              String             @map("city_id")
+  city                City               @relation(fields: [cityId], references: [id])
+  mohallaName         String             @map("mohalla_name")
+  category            ClassifiedCategory
+  title               String             @db.VarChar(255)
+  description         String             @db.Text
+  price               Decimal            @db.Decimal(12, 2)
+  isNegotiable        Boolean            @default(false) @map("is_negotiable")
+  condition           ItemCondition      @default(NOT_APPLICABLE)
+  realEstateMeta      Json?              @map("real_estate_meta") // { bhk, carpet_area, near_masjid, thaali_friendly, brokerage, deposit }
+  jobMeta             Json?              @map("job_meta")
+  mediaUrls           Json               @map("media_urls")
+  status              ListingStatus      @default(ACTIVE)
+  whatsappClicksCount Int                @default(0) @map("whatsapp_clicks_count")
+  createdAt           DateTime           @default(now()) @map("created_at")
+  updatedAt           DateTime           @updatedAt @map("updated_at")
+
+  savedItems          SavedItem[]
+  leadEvents          LeadEvent[]
+
+  // Fast classifieds indexing required by project specification
+  @@index([cityId, category, createdAt(sort: Desc)])
+  @@map("classified_listings")
+}
+
+model SavedItem {
+  id           String             @id @default(uuid())
+  userId       String             @map("user_id")
+  user         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId       String?            @map("post_id")
+  post         FeedPost?          @relation(fields: [postId], references: [id], onDelete: Cascade)
+  classifiedId String?            @map("classified_id")
+  classified   ClassifiedListing? @relation(fields: [classifiedId], references: [id], onDelete: Cascade)
+  createdAt    DateTime           @default(now()) @map("created_at")
+
+  @@unique([userId, postId])
+  @@unique([userId, classifiedId])
+  @@map("saved_items")
+}
+
+model LeadEvent {
+  id           String             @id @default(uuid())
+  itemType     String             @map("item_type") // "POST" | "CLASSIFIED" | "STORY"
+  postId       String?            @map("post_id")
+  post         FeedPost?          @relation(fields: [postId], references: [id], onDelete: Cascade)
+  classifiedId String?            @map("classified_id")
+  classified   ClassifiedListing? @relation(fields: [classifiedId], references: [id], onDelete: Cascade)
+  itemTitle    String             @map("item_title")
+  sellerId     String             @map("seller_id")
+  buyerName    String?            @map("buyer_name")
+  buyerIts     String?            @map("buyer_its")
+  buyerMohalla String?            @map("buyer_mohalla")
+  createdAt    DateTime           @default(now()) @map("created_at")
+
+  @@index([sellerId, createdAt(sort: Desc)])
+  @@map("lead_events")
+}
