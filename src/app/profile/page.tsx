@@ -27,6 +27,8 @@ export default function ProfilePage() {
   const router = useRouter();
   const {
     currentUser,
+    isAuthenticated,
+    authChecked,
     logout,
     setIsVerificationModalOpen,
     classifieds,
@@ -35,6 +37,12 @@ export default function ProfilePage() {
   } = useApp();
 
   const [activeTab, setActiveTab] = useState<'OVERVIEW' | 'MY_LISTINGS' | 'SAVED'>('OVERVIEW');
+
+  React.useEffect(() => {
+    if (authChecked && !isAuthenticated) {
+      router.push('/');
+    }
+  }, [authChecked, isAuthenticated, router]);
 
   const myListings = classifieds.filter(
     (c) => c.sellerId === currentUser.id || c.sellerName === currentUser.fullName
@@ -126,7 +134,7 @@ export default function ProfilePage() {
                   ? 'Verified Mumin'
                   : currentUser.verificationStatus === 'PENDING'
                   ? 'KYC Under Review'
-                  : 'Unverified Guest'}
+                  : 'Unverified Member'}
               </span>
 
               {currentUser.verificationStatus !== 'VERIFIED' ? (

@@ -24,9 +24,11 @@ import {
 import { generateWhatsAppLink, WhatsAppInquiryPayload } from '@/utils/whatsapp';
 
 interface AppContextType {
-  // User & Persona state
+  // User & Authentication state
   currentUser: User;
   setCurrentUser: (user: User) => void;
+  isAuthenticated: boolean;
+  authChecked: boolean;
   switchPersona: (role: 'UNVERIFIED' | 'PENDING' | 'VERIFIED' | 'CREATOR' | 'ADMIN') => void;
   isVerified: boolean;
   logout: () => Promise<void>;
@@ -140,25 +142,24 @@ const INITIAL_DEMO_LEADS: LeadEvent[] = [
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const isEmptyMode = process.env.NEXT_PUBLIC_EMPTY_DATABASE === 'true';
-
-  // Current user defaults to Guest in empty mode, or Murtuza in demo mode
-  const [currentUser, setCurrentUser] = useState<User>(isEmptyMode ? GUEST_DEFAULT_USER : SEED_USERS[0]);
+  const [authChecked, setAuthChecked] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User>(GUEST_DEFAULT_USER);
+  const isAuthenticated = Boolean(currentUser && currentUser.id && !currentUser.id.startsWith('guest'));
 
   // Global Location filter (Default 'mumbai' or 'all')
   const [selectedCityId, setSelectedCityId] = useState<string>('mumbai');
   const [selectedLocality, setSelectedLocality] = useState<string>('All Localities');
 
   // Feed State
-  const [feedPosts, setFeedPosts] = useState<FeedPost[]>(isEmptyMode ? [] : SEED_POSTS);
+  const [feedPosts, setFeedPosts] = useState<FeedPost[]>([]);
   const [activeFeedCategory, setActiveFeedCategory] = useState<string>('ALL');
 
   // Stories
-  const [stories, setStories] = useState<StoryItem[]>(isEmptyMode ? [] : SEED_STORIES);
+  const [stories, setStories] = useState<StoryItem[]>([]);
   const [activeStoryIndex, setActiveStoryIndex] = useState<number | null>(null);
 
   // Classifieds
-  const [classifieds, setClassifieds] = useState<ClassifiedListing[]>(isEmptyMode ? [] : SEED_CLASSIFIEDS);
+  const [classifieds, setClassifieds] = useState<ClassifiedListing[]>([]);
   const [activeClassifiedCategory, setActiveClassifiedCategory] = useState<ClassifiedCategory | 'ALL'>('ALL');
   const [selectedClassifiedDetail, setSelectedClassifiedDetail] = useState<ClassifiedListing | null>(null);
 
@@ -169,11 +170,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   // Leads & Businesses
-  const [leadEvents, setLeadEvents] = useState<LeadEvent[]>(isEmptyMode ? [] : INITIAL_DEMO_LEADS);
-  const [businesses, setBusinesses] = useState<BusinessProfile[]>(isEmptyMode ? [] : SEED_BUSINESSES);
-  const [verificationRequests, setVerificationRequests] = useState<ITSVerificationRequest[]>(
-    isEmptyMode ? [] : SEED_VERIFICATION_REQUESTS
-  );
+  const [leadEvents, setLeadEvents] = useState<LeadEvent[]>([]);
+  const [businesses, setBusinesses] = useState<BusinessProfile[]>([]);
+  const [verificationRequests, setVerificationRequests] = useState<ITSVerificationRequest[]>([]);
 
   const isVerified = currentUser.verificationStatus === 'VERIFIED';
 
@@ -185,9 +184,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       .then((data) => {
         if (data.authenticated && data.user) {
           setCurrentUser(data.user);
+        } else {
+          setCurrentUser(GUEST_DEFAULT_USER);
         }
       })
-      .catch((err) => console.log('Session check completed:', err));
+      .catch((err) => console.log('Session check completed:', err))
+      .finally(() => setAuthChecked(true));
 
     // 2. Load Feed Posts from Backend Database
     fetch('/api/feed')
@@ -235,19 +237,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
     } finally {
-      setCurrentUser({
-        id: `guest-${Date.now()}`,
-        email: 'guest@mumineen.org',
-        phone: '',
-        fullName: 'Guest Visitor',
-        avatarUrl: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=250&q=80',
-        verificationStatus: 'UNVERIFIED',
-        cityId: 'mumbai',
-        cityName: 'Mumbai',
-        mohallaName: 'Mazgaon',
-        role: 'MEMBER',
-        createdAt: new Date().toISOString(),
-      });
+      setCurrentUser(GUEST_DEFAULT_USER);
     }
   };
 
@@ -529,6 +519,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       value={{
         currentUser,
         setCurrentUser,
+        isAuthenticated,
+        authChecked,
         switchPersona,
         isVerified,
         logout,

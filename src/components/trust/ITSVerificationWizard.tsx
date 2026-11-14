@@ -157,11 +157,6 @@ export const ITSVerificationWizard: React.FC = () => {
           {/* STEP 1: Basic Profile */}
           {step === 1 && (
             <div className="space-y-4 animate-in fade-in">
-              <div className="bg-emerald-50 border border-emerald-200 p-3 rounded-xl text-xs text-emerald-900">
-                <span className="font-bold">Community Trust Notice:</span> Every submission is
-                manually inspected and validated by an authorized community administrator to protect
-                mumineen against unverified listings and fraudulent intermediaries.
-              </div>
 
               <div>
                 <label className="text-xs font-bold text-slate-700 block mb-1">
@@ -245,12 +240,6 @@ export const ITSVerificationWizard: React.FC = () => {
                       </option>
                     ))}
                 </select>
-              </div>
-
-              <div className="p-3 bg-surface-muted rounded-xl border border-border text-xs text-slate-600">
-                <span className="font-semibold text-slate-800">Mohalla verification:</span> The Jamaat
-                admin will verify your Mohalla affiliation before granting verified posting
-                privileges for local real estate and food pop-ups.
               </div>
             </div>
           )}

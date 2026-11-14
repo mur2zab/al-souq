@@ -60,15 +60,15 @@ export default function AdminPage() {
               Admin Authentication Required
             </h2>
             <p className="text-xs text-slate-600 leading-relaxed">
-              This verification desk is restricted to authorized Jamaat administrators reviewing community KYC submissions.
+              This verification desk is restricted to authorized community administrators.
             </p>
-            <button
-              onClick={() => switchPersona('ADMIN')}
+            <Link
+              href="/login"
               className="w-full bg-emerald-900 hover:bg-emerald-950 text-white font-bold py-2.5 px-4 rounded-xl text-xs shadow-gold transition active:scale-95 flex items-center justify-center gap-2"
             >
               <ShieldCheck className="w-4 h-4 text-gold-400" />
-              <span>Switch to Admin Session (Murtuza)</span>
-            </button>
+              <span>Sign In as Admin</span>
+            </Link>
           </div>
         ) : (
           <AdminConsole />
