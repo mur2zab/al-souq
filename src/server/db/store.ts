@@ -33,8 +33,10 @@ interface DatabaseSchema {
   verifications: ITSVerificationRequest[];
 }
 
-const DATA_DIR = path.join(process.cwd(), '.data');
-const DB_FILE = path.join(DATA_DIR, 'alsouq_database.json');
+const IS_VERCEL = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
+const BUNDLED_DB_FILE = path.join(process.cwd(), '.data', 'alsouq_database.json');
+const WRITABLE_DIR = IS_VERCEL ? '/tmp' : path.join(process.cwd(), '.data');
+const DB_FILE = IS_VERCEL ? path.join('/tmp', 'alsouq_database.json') : BUNDLED_DB_FILE;
 
 // Default initial password hash for all seed users ("Mumin@123")
 const DEFAULT_PASSWORD_HASH = hashPassword('Mumin@123');
@@ -54,6 +56,7 @@ class ServerDatabaseStore {
 
   private initialize() {
     try {
+      // 1. Try loading from writable DB file (e.g. /tmp on Vercel or .data locally)
       if (fs.existsSync(DB_FILE)) {
         const raw = fs.readFileSync(DB_FILE, 'utf-8');
         const data: DatabaseSchema = JSON.parse(raw);
@@ -64,6 +67,21 @@ class ServerDatabaseStore {
         this.classifieds = data.classifieds || [];
         this.leads = data.leads || [];
         this.verifications = data.verifications || [];
+        return;
+      }
+
+      // 2. On Vercel, copy from bundled database file to writable /tmp
+      if (IS_VERCEL && fs.existsSync(BUNDLED_DB_FILE)) {
+        const raw = fs.readFileSync(BUNDLED_DB_FILE, 'utf-8');
+        const data: DatabaseSchema = JSON.parse(raw);
+        this.users = data.users || [];
+        this.businesses = data.businesses || [];
+        this.posts = data.posts || [];
+        this.stories = data.stories || [];
+        this.classifieds = data.classifieds || [];
+        this.leads = data.leads || [];
+        this.verifications = data.verifications || [];
+        this.persistToDisk();
         return;
       }
     } catch (err) {
@@ -150,8 +168,8 @@ class ServerDatabaseStore {
 
   public persistToDisk() {
     try {
-      if (!fs.existsSync(DATA_DIR)) {
-        fs.mkdirSync(DATA_DIR, { recursive: true });
+      if (!fs.existsSync(WRITABLE_DIR)) {
+        fs.mkdirSync(WRITABLE_DIR, { recursive: true });
       }
       const data: DatabaseSchema = {
         users: this.users,
@@ -169,7 +187,7 @@ class ServerDatabaseStore {
   }
 }
 
-// Global singleton instance for server environment
+// Global singleton instance for server environment (persists across all route handlers in this worker process)
 const globalForStore = global as unknown as { dbStore: ServerDatabaseStore };
 export const dbStore = globalForStore.dbStore || new ServerDatabaseStore();
-if (process.env.NODE_ENV !== 'production') globalForStore.dbStore = dbStore;
+globalForStore.dbStore = dbStore;

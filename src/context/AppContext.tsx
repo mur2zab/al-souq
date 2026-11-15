@@ -80,6 +80,7 @@ interface AppContextType {
 
   // Admin Verification Queue
   verificationRequests: ITSVerificationRequest[];
+  refreshVerifications: () => Promise<void>;
   submitVerificationRequest: (req: Omit<ITSVerificationRequest, 'id' | 'submittedAt' | 'status'>) => void;
   adminApproveVerification: (requestId: string) => void;
   adminRejectVerification: (requestId: string, notes?: string) => void;
@@ -222,15 +223,20 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       .catch((err) => console.log('Stories sync:', err));
 
     // 5. Load Verification Requests from Backend Database
-    fetch('/api/admin/verifications')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success && Array.isArray(data.verifications)) {
-          setVerificationRequests(data.verifications);
-        }
-      })
-      .catch((err) => console.log('Verifications sync:', err));
+    refreshVerifications();
   }, []);
+
+  const refreshVerifications = async () => {
+    try {
+      const res = await fetch('/api/admin/verifications', { cache: 'no-store' });
+      const data = await res.json();
+      if (data.success && Array.isArray(data.verifications)) {
+        setVerificationRequests(data.verifications);
+      }
+    } catch (err) {
+      console.log('Verifications sync:', err);
+    }
+  };
 
   // Logout
   const logout = async () => {
@@ -556,6 +562,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         leadEvents,
         handleWhatsAppInquiry,
         verificationRequests,
+        refreshVerifications,
         submitVerificationRequest,
         adminApproveVerification,
         adminRejectVerification,

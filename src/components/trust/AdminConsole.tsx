@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '@/context/AppContext';
 import {
   ShieldCheck,
@@ -15,11 +15,13 @@ import {
   ZoomIn,
   AlertTriangle,
   RotateCcw,
+  RefreshCw,
 } from 'lucide-react';
 
 export const AdminConsole: React.FC = () => {
   const {
     verificationRequests,
+    refreshVerifications,
     adminApproveVerification,
     adminRejectVerification,
     businesses,
@@ -31,6 +33,24 @@ export const AdminConsole: React.FC = () => {
   const [rejectingId, setRejectingId] = useState<string | null>(null);
   const [rejectionReason, setRejectionReason] = useState<string>('Card photo blurry or illegible');
   const [customReason, setCustomReason] = useState<string>('');
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [lastRefreshed, setLastRefreshed] = useState<string>('Just now');
+
+  // Load and poll verifications in real-time
+  useEffect(() => {
+    refreshVerifications();
+    const interval = setInterval(() => {
+      refreshVerifications();
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [refreshVerifications]);
+
+  const handleManualRefresh = async () => {
+    setIsRefreshing(true);
+    await refreshVerifications();
+    setLastRefreshed(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
+    setTimeout(() => setIsRefreshing(false), 500);
+  };
 
   const pendingRequests = verificationRequests.filter((r) => r.status === 'PENDING');
   const processedRequests = verificationRequests.filter((r) => r.status !== 'PENDING');
@@ -64,37 +84,55 @@ export const AdminConsole: React.FC = () => {
             </p>
           </div>
         </div>
+
+        <button
+          type="button"
+          onClick={handleManualRefresh}
+          disabled={isRefreshing}
+          className="flex items-center gap-1.5 bg-emerald-900/90 hover:bg-emerald-850 border border-gold-500/40 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition active:scale-95 disabled:opacity-50 shadow-sm"
+          title="Refresh Queue"
+        >
+          <RefreshCw className={`w-3.5 h-3.5 text-gold-400 ${isRefreshing ? 'animate-spin' : ''}`} />
+          <span>{isRefreshing ? 'Syncing...' : 'Refresh Queue'}</span>
+        </button>
       </div>
 
-      {/* Tabs */}
-      <div className="flex items-center gap-2 border-b border-border pb-2">
-        <button
-          onClick={() => setActiveTab('VERIFICATIONS')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition ${
-            activeTab === 'VERIFICATIONS'
-              ? 'bg-emerald-900 text-white shadow-sm ring-1 ring-gold-500/40'
-              : 'text-slate-600 hover:text-slate-900 bg-surface-muted'
-          }`}
-        >
-          <CreditCard className={`w-4 h-4 ${activeTab === 'VERIFICATIONS' ? 'text-gold-300' : ''}`} />
-          <span className={activeTab === 'VERIFICATIONS' ? 'text-white font-bold' : ''}>
-            Pending Review Queue ({pendingRequests.length})
-          </span>
-        </button>
+      {/* Tabs & Live Sync Status */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-border pb-2">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setActiveTab('VERIFICATIONS')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition ${
+              activeTab === 'VERIFICATIONS'
+                ? 'bg-emerald-900 text-white shadow-sm ring-1 ring-gold-500/40'
+                : 'text-slate-600 hover:text-slate-900 bg-surface-muted'
+            }`}
+          >
+            <CreditCard className={`w-4 h-4 ${activeTab === 'VERIFICATIONS' ? 'text-gold-300' : ''}`} />
+            <span className={activeTab === 'VERIFICATIONS' ? 'text-white font-bold' : ''}>
+              Pending Review Queue ({pendingRequests.length})
+            </span>
+          </button>
 
-        <button
-          onClick={() => setActiveTab('TIJARAT_BUSINESSES')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition ${
-            activeTab === 'TIJARAT_BUSINESSES'
-              ? 'bg-emerald-900 text-white shadow-sm ring-1 ring-gold-500/40'
-              : 'text-slate-600 hover:text-slate-900 bg-surface-muted'
-          }`}
-        >
-          <Building className={`w-4 h-4 ${activeTab === 'TIJARAT_BUSINESSES' ? 'text-gold-300' : ''}`} />
-          <span className={activeTab === 'TIJARAT_BUSINESSES' ? 'text-white font-bold' : ''}>
-            Tijarat Storefronts & Raza Badges ({businesses.length})
-          </span>
-        </button>
+          <button
+            onClick={() => setActiveTab('TIJARAT_BUSINESSES')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition ${
+              activeTab === 'TIJARAT_BUSINESSES'
+                ? 'bg-emerald-900 text-white shadow-sm ring-1 ring-gold-500/40'
+                : 'text-slate-600 hover:text-slate-900 bg-surface-muted'
+            }`}
+          >
+            <Building className={`w-4 h-4 ${activeTab === 'TIJARAT_BUSINESSES' ? 'text-gold-300' : ''}`} />
+            <span className={activeTab === 'TIJARAT_BUSINESSES' ? 'text-white font-bold' : ''}>
+              Tijarat Storefronts & Raza Badges ({businesses.length})
+            </span>
+          </button>
+        </div>
+
+        <div className="flex items-center gap-2 text-[11px] text-slate-500 font-mono">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span>Live sync active • {lastRefreshed}</span>
+        </div>
       </div>
 
       {/* TAB 1: Verification Queue */}
