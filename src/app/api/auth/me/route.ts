@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifySessionToken } from '@/server/auth/auth';
 import { usersRepository } from '@/server/repositories/users.repository';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET(request: NextRequest) {
   try {
     const cookieToken = request.cookies.get('alsouq_session')?.value;

@@ -54,6 +54,24 @@ class ServerDatabaseStore {
     this.initialize();
   }
 
+  public reloadFromDisk() {
+    try {
+      if (fs.existsSync(DB_FILE)) {
+        const raw = fs.readFileSync(DB_FILE, 'utf-8');
+        const data: DatabaseSchema = JSON.parse(raw);
+        if (data.users) this.users = data.users;
+        if (data.businesses) this.businesses = data.businesses;
+        if (data.posts) this.posts = data.posts;
+        if (data.stories) this.stories = data.stories;
+        if (data.classifieds) this.classifieds = data.classifieds;
+        if (data.leads) this.leads = data.leads;
+        if (data.verifications) this.verifications = data.verifications;
+      }
+    } catch (err) {
+      console.warn('Failed to reload database from disk:', err);
+    }
+  }
+
   private initialize() {
     try {
       // 1. Try loading from writable DB file (e.g. /tmp on Vercel or .data locally)

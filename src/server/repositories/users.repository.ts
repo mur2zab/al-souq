@@ -4,6 +4,7 @@ import { hashPassword } from '@/server/auth/auth';
 
 export class UsersRepository {
   async findById(id: string): Promise<User | null> {
+    dbStore.reloadFromDisk();
     const user = dbStore.users.find((u) => u.id === id);
     if (!user) return null;
     const { passwordHash, ...safeUser } = user;
@@ -11,6 +12,7 @@ export class UsersRepository {
   }
 
   async findByEmailOrPhone(identifier: string): Promise<UserWithAuth | null> {
+    dbStore.reloadFromDisk();
     const clean = identifier.trim().toLowerCase();
     const cleanPhone = identifier.replace(/[^0-9]/g, '');
 
@@ -24,6 +26,7 @@ export class UsersRepository {
   }
 
   async findByItsNumber(its: string): Promise<User | null> {
+    dbStore.reloadFromDisk();
     const user = dbStore.users.find((u) => u.itsNumber === its.trim());
     if (!user) return null;
     const { passwordHash, ...safeUser } = user;

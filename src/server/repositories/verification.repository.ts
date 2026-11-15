@@ -3,10 +3,12 @@ import { ITSVerificationRequest } from '@/types';
 
 export class VerificationRepository {
   async getAll(): Promise<ITSVerificationRequest[]> {
+    dbStore.reloadFromDisk();
     return dbStore.verifications;
   }
 
   async getPending(): Promise<ITSVerificationRequest[]> {
+    dbStore.reloadFromDisk();
     return dbStore.verifications.filter((r) => r.status === 'PENDING');
   }
 
