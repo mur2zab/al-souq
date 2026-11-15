@@ -5,16 +5,11 @@ import { useApp } from '@/context/AppContext';
 import { CITIES } from '@/data/cities';
 import {
   Lock,
-  Mail,
   User as UserIcon,
-  Phone,
-  CreditCard,
-  MapPin,
   CheckCircle2,
   Eye,
   EyeOff,
   ArrowRight,
-  ShieldCheck,
 } from 'lucide-react';
 
 interface AuthScreenProps {
@@ -88,7 +83,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess }) => {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!fullName.trim() || !email.trim() || !regPassword.trim()) {
-      setErrorMsg('Please enter your full name, email, and a password.');
+      setErrorMsg('Please enter your full name, email, and password.');
       return;
     }
     setIsLoading(true);
@@ -121,28 +116,6 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess }) => {
       if (onSuccess) onSuccess();
     } catch (err: any) {
       setErrorMsg(err.message || 'Registration failed');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleQuickDemo = async (role: 'ADMIN' | 'VERIFIED') => {
-    setIsLoading(true);
-    setErrorMsg('');
-    try {
-      const res = await fetch('/api/auth/demo-login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ role }),
-      });
-      const data = await res.json();
-      if (data.success && data.user) {
-        setCurrentUser(data.user);
-        setSuccessMsg(`Logged in as ${data.user.fullName}`);
-        if (onSuccess) onSuccess();
-      }
-    } catch (err: any) {
-      setErrorMsg(err.message || 'Quick login failed');
     } finally {
       setIsLoading(false);
     }
@@ -233,7 +206,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess }) => {
                     type="button"
                     onClick={() => {
                       setAuthMethod('OTP');
-                      setOtp('123456');
+                      setOtp('');
                     }}
                     className={`text-[10px] font-bold px-2 py-0.5 rounded transition ${
                       authMethod === 'OTP'
@@ -250,7 +223,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess }) => {
                 <input
                   type="text"
                   required
-                  placeholder="admin@alsouq.community or 10000001"
+                  placeholder="Enter email, phone, or ITS ID"
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
                   className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-border bg-surface text-slate-900 text-xs focus:outline-none focus:border-emerald-800"
@@ -268,7 +241,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess }) => {
                   <input
                     type={showPassword ? 'text' : 'password'}
                     required
-                    placeholder="Enter password"
+                    placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-border bg-surface text-slate-900 text-xs focus:outline-none focus:border-emerald-800"
@@ -284,18 +257,15 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess }) => {
               </div>
             ) : (
               <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="text-xs font-bold text-slate-800">
-                    6-Digit WhatsApp OTP
-                  </label>
-                  <span className="text-[10px] text-emerald-700 font-mono">Default: 123456</span>
-                </div>
+                <label className="text-xs font-bold text-slate-800 block mb-1">
+                  6-Digit WhatsApp OTP
+                </label>
                 <input
                   type="text"
                   maxLength={6}
-                  placeholder="123456"
+                  placeholder="Enter 6-digit OTP"
                   value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
+                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-surface text-slate-900 text-xs font-mono tracking-widest text-center font-bold focus:outline-none focus:border-emerald-800"
                 />
               </div>
@@ -320,7 +290,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess }) => {
               <input
                 type="text"
                 required
-                placeholder="e.g. Murtuza Bagasrawala"
+                placeholder="Full Name"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-surface text-slate-900 text-xs focus:outline-none focus:border-emerald-800"
@@ -416,27 +386,6 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess }) => {
             </button>
           </form>
         )}
-
-        {/* Quick Demo Access (Compact & Clean) */}
-        <div className="pt-2 border-t border-border flex items-center justify-between text-xs text-slate-500">
-          <span className="text-[11px]">Quick Access:</span>
-          <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={() => handleQuickDemo('ADMIN')}
-              className="text-[11px] font-bold text-purple-700 hover:text-purple-900 bg-purple-50 px-2 py-0.5 rounded border border-purple-200 transition"
-            >
-              Admin
-            </button>
-            <button
-              type="button"
-              onClick={() => handleQuickDemo('VERIFIED')}
-              className="text-[11px] font-bold text-emerald-800 hover:text-emerald-950 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 transition"
-            >
-              Verified Member
-            </button>
-          </div>
-        </div>
       </div>
     </div>
   );

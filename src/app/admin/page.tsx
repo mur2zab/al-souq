@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 
 export default function AdminPage() {
-  const { currentUser, switchPersona } = useApp();
+  const { currentUser } = useApp();
 
   const isAdmin = currentUser.role === 'ADMIN';
 
