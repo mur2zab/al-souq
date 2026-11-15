@@ -20,6 +20,7 @@ import {
 
 export const AdminConsole: React.FC = () => {
   const {
+    currentUser,
     verificationRequests,
     refreshVerifications,
     adminApproveVerification,
@@ -36,14 +37,27 @@ export const AdminConsole: React.FC = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastRefreshed, setLastRefreshed] = useState<string>('Just now');
 
-  // Load and poll verifications in real-time
+  const isAdmin = currentUser.role === 'ADMIN';
+
+  // Load and poll verifications in real-time only if admin
   useEffect(() => {
+    if (!isAdmin) return;
     refreshVerifications();
     const interval = setInterval(() => {
       refreshVerifications();
     }, 4000);
     return () => clearInterval(interval);
-  }, [refreshVerifications]);
+  }, [isAdmin, refreshVerifications]);
+
+  if (!isAdmin) {
+    return (
+      <div className="max-w-md mx-auto p-8 bg-surface rounded-3xl border border-border text-center space-y-3 shadow-subtle my-12">
+        <ShieldCheck className="w-10 h-10 text-slate-400 mx-auto" />
+        <h3 className="font-serif font-bold text-slate-800 text-base">Admin Desk Restricted</h3>
+        <p className="text-xs text-slate-500">Only authorized community administrators can access the review queue.</p>
+      </div>
+    );
+  }
 
   const handleManualRefresh = async () => {
     setIsRefreshing(true);

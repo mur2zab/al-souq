@@ -221,14 +221,25 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         }
       })
       .catch((err) => console.log('Stories sync:', err));
-
-    // 5. Load Verification Requests from Backend Database
-    refreshVerifications();
   }, []);
 
+  // Sync admin verification queue only if logged in user has ADMIN role
+  useEffect(() => {
+    if (currentUser.role === 'ADMIN') {
+      refreshVerifications();
+    } else {
+      setVerificationRequests([]);
+    }
+  }, [currentUser.role]);
+
   const refreshVerifications = async () => {
+    if (currentUser.role !== 'ADMIN') {
+      setVerificationRequests([]);
+      return;
+    }
     try {
       const res = await fetch('/api/admin/verifications', { cache: 'no-store' });
+      if (!res.ok) return;
       const data = await res.json();
       if (data.success && Array.isArray(data.verifications)) {
         setVerificationRequests(data.verifications);

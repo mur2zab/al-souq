@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verificationRepository } from '@/server/repositories/verification.repository';
+import { verifySessionToken } from '@/server/auth/auth';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -9,6 +10,18 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
+    const token =
+      request.cookies.get('alsouq_session')?.value ||
+      request.headers.get('authorization')?.replace('Bearer ', '');
+
+    const payload = token ? verifySessionToken(token) : null;
+    if (!payload || payload.role !== 'ADMIN') {
+      return NextResponse.json(
+        { success: false, message: 'Forbidden: Admin access required' },
+        { status: 403 }
+      );
+    }
+
     const { status, notes } = await request.json();
 
     if (status !== 'VERIFIED' && status !== 'REJECTED') {

@@ -54,6 +54,13 @@ export default function HomeApp() {
     }
   }, [authChecked, isAuthenticated, router]);
 
+  // Safety fallback: if not admin, ensure activeTab is not ADMIN_TRUST
+  useEffect(() => {
+    if (activeTab === 'ADMIN_TRUST' && currentUser.role !== 'ADMIN') {
+      setActiveTab('FEED');
+    }
+  }, [activeTab, currentUser.role]);
+
   // Loading state while checking session or redirecting
   if (!authChecked || !isAuthenticated) {
     return (
@@ -275,8 +282,8 @@ export default function HomeApp() {
           </div>
         )}
 
-        {/* TAB 4: ADMIN CONSOLE */}
-        {activeTab === 'ADMIN_TRUST' && (
+        {/* TAB 4: ADMIN CONSOLE (Admin Only) */}
+        {activeTab === 'ADMIN_TRUST' && currentUser.role === 'ADMIN' && (
           <div className="animate-in fade-in duration-150">
             <AdminConsole />
           </div>

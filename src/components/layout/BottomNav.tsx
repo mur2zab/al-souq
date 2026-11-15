@@ -70,19 +70,19 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, setActiveTab })
             <span className="text-[10px]">Seller Hub</span>
           </button>
 
-          <button
-            onClick={() => setActiveTab('ADMIN_TRUST')}
-            className={`flex flex-col items-center gap-1 py-1 px-3 rounded-lg transition active:scale-95 ${
-              activeTab === 'ADMIN_TRUST'
-                ? 'text-emerald-900 font-bold'
-                : 'text-slate-500 hover:text-slate-800'
-            }`}
-          >
-            <ShieldCheck className={`w-5 h-5 ${activeTab === 'ADMIN_TRUST' ? 'stroke-[2.5px] text-emerald-800' : ''}`} />
-            <span className="text-[10px]">
-              {currentUser.role === 'ADMIN' ? 'Admin' : 'Trust'}
-            </span>
-          </button>
+          {currentUser.role === 'ADMIN' && (
+            <button
+              onClick={() => setActiveTab('ADMIN_TRUST')}
+              className={`flex flex-col items-center gap-1 py-1 px-3 rounded-lg transition active:scale-95 ${
+                activeTab === 'ADMIN_TRUST'
+                  ? 'text-emerald-900 font-bold'
+                  : 'text-slate-500 hover:text-slate-800'
+              }`}
+            >
+              <ShieldCheck className={`w-5 h-5 ${activeTab === 'ADMIN_TRUST' ? 'stroke-[2.5px] text-emerald-800' : ''}`} />
+              <span className="text-[10px]">Admin</span>
+            </button>
+          )}
         </div>
       </nav>
 
@@ -133,17 +133,19 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, setActiveTab })
             <span>Seller Hub</span>
           </button>
 
-          <button
-            onClick={() => setActiveTab('ADMIN_TRUST')}
-            className={`flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-semibold transition ${
-              activeTab === 'ADMIN_TRUST'
-                ? 'bg-surface text-emerald-950 shadow-sm border border-border font-bold'
-                : 'text-slate-600 hover:text-emerald-900'
-            }`}
-          >
-            <ShieldCheck className="w-4 h-4 text-emerald-800" />
-            <span>{currentUser.role === 'ADMIN' ? 'Admin Desk' : 'ITS Trust'}</span>
-          </button>
+          {currentUser.role === 'ADMIN' && (
+            <button
+              onClick={() => setActiveTab('ADMIN_TRUST')}
+              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-semibold transition ${
+                activeTab === 'ADMIN_TRUST'
+                  ? 'bg-surface text-emerald-950 shadow-sm border border-border font-bold'
+                  : 'text-slate-600 hover:text-emerald-900'
+              }`}
+            >
+              <ShieldCheck className="w-4 h-4 text-emerald-800" />
+              <span>Admin Desk</span>
+            </button>
+          )}
         </div>
       </div>
     </>
