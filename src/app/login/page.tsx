@@ -29,10 +29,10 @@ export default function LoginPage() {
           <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={() => router.push('/')}
+              onClick={() => router.push(currentUser.verificationStatus === 'PENDING' ? '/onboard-waiting' : '/')}
               className="px-2.5 py-1.5 bg-emerald-900 hover:bg-emerald-950 text-white font-bold rounded-xl text-[11px] shadow-sm transition active:scale-95 flex items-center gap-1"
             >
-              <span>Go to App</span>
+              <span>{currentUser.verificationStatus === 'PENDING' ? 'Waiting Room' : 'Go to App'}</span>
               <ArrowRight className="w-3 h-3 text-gold-400" />
             </button>
             <button

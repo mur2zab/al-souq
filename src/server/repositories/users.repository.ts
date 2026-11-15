@@ -39,15 +39,19 @@ export class UsersRepository {
     cityName: string;
     mohallaName: string;
     itsNumber?: string;
+    itsCardProofUrl?: string;
+    livePhotoUrl?: string;
   }): Promise<User> {
     const newUser: UserWithAuth = {
       id: `user-${Date.now()}`,
       email: data.email.toLowerCase().trim(),
       phone: data.phone.trim(),
       fullName: data.fullName.trim(),
-      avatarUrl: `https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80`,
+      avatarUrl: data.livePhotoUrl || `https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80`,
       itsNumber: data.itsNumber ? data.itsNumber.trim() : undefined,
-      verificationStatus: data.itsNumber && data.itsNumber.length === 8 ? 'PENDING' : 'UNVERIFIED',
+      itsCardProofUrl: data.itsCardProofUrl,
+      livePhotoUrl: data.livePhotoUrl,
+      verificationStatus: 'PENDING',
       cityId: data.cityId,
       cityName: data.cityName,
       mohallaName: data.mohallaName,

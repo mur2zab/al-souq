@@ -17,6 +17,7 @@ import { ListingCreatorModal } from '@/components/creator/ListingCreatorModal';
 import { SellerDashboard } from '@/components/creator/SellerDashboard';
 import { ITSVerificationWizard } from '@/components/trust/ITSVerificationWizard';
 import { AdminConsole } from '@/components/trust/AdminConsole';
+import { OnboardWaitingScreen } from '@/components/auth/OnboardWaitingScreen';
 import {
   Compass,
   Home,
@@ -58,6 +59,15 @@ export default function HomeApp() {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
         <div className="w-10 h-10 border-3 border-emerald-900 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  // Pending user gate: Must wait for Jamaat Admin approval before accessing marketplace
+  if (currentUser.verificationStatus === 'PENDING' && currentUser.role !== 'ADMIN') {
+    return (
+      <div className="min-h-screen bg-background flex flex-col justify-center items-center p-4 selection:bg-gold-500/30">
+        <OnboardWaitingScreen />
       </div>
     );
   }

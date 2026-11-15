@@ -118,15 +118,41 @@ export const AdminConsole: React.FC = () => {
               >
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-border/80 pb-3">
                   <div className="flex items-center gap-3">
-                    <div className="relative group cursor-pointer" onClick={() => setSelectedProofImg(req.idCardImageUrl)}>
-                      <img
-                        src={req.idCardImageUrl}
-                        alt="ITS Card Proof"
-                        className="w-20 h-14 rounded-xl object-cover border-2 border-slate-200 group-hover:border-emerald-600 group-hover:opacity-90 transition shadow-sm"
-                      />
-                      <div className="absolute inset-0 bg-black/40 rounded-xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition text-white">
-                        <ZoomIn className="w-4 h-4" />
+                    {/* Proof Images: ITS Card + Live Photo Click */}
+                    <div className="flex items-center gap-2">
+                      <div
+                        className="relative group cursor-pointer flex flex-col items-center"
+                        onClick={() => setSelectedProofImg(req.idCardImageUrl)}
+                        title="Click to inspect ITS Card"
+                      >
+                        <img
+                          src={req.idCardImageUrl}
+                          alt="ITS Card Proof"
+                          className="w-16 h-14 rounded-xl object-cover border-2 border-slate-200 group-hover:border-emerald-600 transition shadow-sm"
+                        />
+                        <span className="text-[9px] font-bold text-slate-500 mt-0.5">ITS Card</span>
+                        <div className="absolute inset-0 h-14 bg-black/40 rounded-xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition text-white">
+                          <ZoomIn className="w-3.5 h-3.5" />
+                        </div>
                       </div>
+
+                      {req.livePhotoUrl && (
+                        <div
+                          className="relative group cursor-pointer flex flex-col items-center"
+                          onClick={() => setSelectedProofImg(req.livePhotoUrl!)}
+                          title="Click to inspect Live Photo"
+                        >
+                          <img
+                            src={req.livePhotoUrl}
+                            alt="Live Photo Click"
+                            className="w-14 h-14 rounded-xl object-cover border-2 border-emerald-300 group-hover:border-emerald-700 transition shadow-sm"
+                          />
+                          <span className="text-[9px] font-bold text-emerald-800 mt-0.5">Live Photo</span>
+                          <div className="absolute inset-0 h-14 bg-black/40 rounded-xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition text-white">
+                            <ZoomIn className="w-3.5 h-3.5" />
+                          </div>
+                        </div>
+                      )}
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
@@ -281,7 +307,7 @@ export const AdminConsole: React.FC = () => {
                         className="flex items-center gap-1.5 bg-emerald-900 hover:bg-emerald-950 text-white font-bold px-4 py-2 rounded-xl text-xs shadow-sm transition active:scale-95"
                       >
                         <CheckCircle2 className="w-4 h-4 text-gold-400" />
-                        <span className="text-white font-bold">Approve & Grant Verified Mumin Badge</span>
+                        <span className="text-white font-bold">Approve & Allow Member</span>
                       </button>
                     </div>
                   </div>

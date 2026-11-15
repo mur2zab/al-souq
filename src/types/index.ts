@@ -10,6 +10,7 @@ export interface User {
   itsNumber?: string;
   verificationStatus: TrustLevel;
   itsCardProofUrl?: string;
+  livePhotoUrl?: string;
   cityId: string;
   cityName: string;
   mohallaName: string;
@@ -177,6 +178,7 @@ export interface ITSVerificationRequest {
   jamaatCity: string;
   mohalla: string;
   idCardImageUrl: string;
+  livePhotoUrl?: string;
   submittedAt: string;
   ocrExtractedIts: string;
   ocrExtractedName: string;
