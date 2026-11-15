@@ -40,7 +40,7 @@ export default function ProfilePage() {
 
   React.useEffect(() => {
     if (authChecked && !isAuthenticated) {
-      router.push('/');
+      router.replace('/login');
     }
   }, [authChecked, isAuthenticated, router]);
 

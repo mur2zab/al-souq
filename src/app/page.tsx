@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useApp } from '@/context/AppContext';
 import { Header } from '@/components/layout/Header';
 import { BottomNav } from '@/components/layout/BottomNav';
@@ -16,7 +17,6 @@ import { ListingCreatorModal } from '@/components/creator/ListingCreatorModal';
 import { SellerDashboard } from '@/components/creator/SellerDashboard';
 import { ITSVerificationWizard } from '@/components/trust/ITSVerificationWizard';
 import { AdminConsole } from '@/components/trust/AdminConsole';
-import { AuthScreen } from '@/components/auth/AuthScreen';
 import {
   Compass,
   Home,
@@ -45,20 +45,19 @@ export default function HomeApp() {
 
   const [activeTab, setActiveTab] = useState<'FEED' | 'CLASSIFIEDS' | 'SELLER_STUDIO' | 'ADMIN_TRUST'>('FEED');
 
-  // Loading state while checking session
-  if (!authChecked) {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (authChecked && !isAuthenticated) {
+      router.replace('/login');
+    }
+  }, [authChecked, isAuthenticated, router]);
+
+  // Loading state while checking session or redirecting
+  if (!authChecked || !isAuthenticated) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
         <div className="w-10 h-10 border-3 border-emerald-900 border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
-
-  // Mandatory Authentication: No guest browsing
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col justify-center items-center p-4 selection:bg-gold-500/30">
-        <AuthScreen />
       </div>
     );
   }

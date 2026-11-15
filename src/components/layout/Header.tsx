@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useApp } from '@/context/AppContext';
 import { CITIES } from '@/data/cities';
 import {
@@ -16,6 +17,7 @@ import {
 } from 'lucide-react';
 
 export const Header: React.FC = () => {
+  const router = useRouter();
   const {
     currentUser,
     selectedCityId,
@@ -164,9 +166,10 @@ export const Header: React.FC = () => {
                   )}
 
                   <button
-                    onClick={() => {
-                      logout();
+                    onClick={async () => {
                       setShowUserMenu(false);
+                      await logout();
+                      router.replace('/login');
                     }}
                     className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-rose-50 text-rose-700 flex items-center justify-between font-medium transition"
                   >
