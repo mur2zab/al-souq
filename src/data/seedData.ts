@@ -255,7 +255,8 @@ export const SEED_POSTS: FeedPost[] = [
       'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=1080&q=80',
       'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1080&q=80',
     ],
-    caption: '✨ Special Friday Bohra Thaali Box (Serves 4 Mumineen)\n\n• Kharas: Smoked Mutton Pattice & Crispy Kheema Samosas\n• Mithas: Authentic Doodhi No Halwo with Malai garnish\n• Jaman: Dum Mutton Biryani with fragrant saffron rice + Kachumber\n• Rotis: 8 Soft Ghee Gol Rotis\n\nPure homemade preparation with raza. Booking closes at 4:30 PM for prompt 7:30 PM Mazgaon & Bhendi Bazaar deliveries.',
+    caption:
+      '✨ Special Friday Bohra Thaali Box (Serves 4 Mumineen)\n\n• Kharas: Smoked Mutton Pattice & Crispy Kheema Samosas\n• Mithas: Authentic Doodhi No Halwo with Malai garnish\n• Jaman: Dum Mutton Biryani with fragrant saffron rice + Kachumber\n• Rotis: 8 Soft Ghee Gol Rotis\n\nPure homemade preparation with raza. Booking closes at 4:30 PM for prompt 7:30 PM Mazgaon & Bhendi Bazaar deliveries.\n\nQuick Order: wa.me/919892233445 or browse daily menu on https://instagram.com/burhanithaali and https://burhanicatering.com',
     priceInr: 2200,
     isAvailableToday: true,
     todayDropDeadline: 'Order before 4:30 PM',
@@ -283,7 +284,8 @@ export const SEED_POSTS: FeedPost[] = [
       'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=1080&q=80',
       'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=1080&q=80',
     ],
-    caption: '🌸 The "Gulshan" Heritage Collection: Pure Cotton Hand-Embroidered Rida in pastel sage mint.\n\nCrafted with delicate cross-stitch floral motifs on the pardi, scalloped hand crochet border, and heavy matching lehnga finish. Breathable fabric ideal for Mumbai humidity and all-day comfort at masjid.\n\nWorldwide shipping available to Dubai, London, Houston & Nairobi via DHL.',
+    caption:
+      '🌸 The "Gulshan" Heritage Collection: Pure Cotton Hand-Embroidered Rida in pastel sage mint.\n\nCrafted with delicate cross-stitch floral motifs on the pardi, scalloped hand crochet border, and heavy matching lehnga finish. Breathable fabric ideal for Mumbai humidity and all-day comfort at masjid.\n\nWorldwide shipping available to Dubai, London, Houston & Nairobi via DHL.\n\nLookbook: https://instagram.com/faridas_rida or visit https://faridasrida.com',
     priceInr: 4600,
     isAvailableToday: false,
     cityId: 'mumbai',
@@ -395,7 +397,8 @@ export const SEED_CLASSIFIEDS: ClassifiedListing[] = [
     mohallaName: 'Mazgaon (Hasanabad / Saifee Park)',
     category: 'REAL_ESTATE_RENT',
     title: 'Spacious 2BHK Flat – 3 Mins to Uzri Masjid & Hasanabad (Zero Brokerage)',
-    description: 'Direct owner listing for Dawoodi Bohra family. Beautiful 840 sqft carpet 2BHK flat situated on the 5th floor with dual elevators and 24-hour sweet municipal water.\n\nKey Highlights for Community Living:\n• Just 3 minutes walk to Uzri Masjid and Hasanabad Dargah\n• FMB Thaali kitchen drop service directly accessible at ground lobby\n• Piped PNG gas, semi-furnished modular kitchen, built-in teak wardrobes\n• High natural cross-ventilation and quiet mumin-majority building society\n• Strictly ZERO BROKERAGE.',
+    description:
+      'Direct owner listing for Dawoodi Bohra family. Beautiful 840 sqft carpet 2BHK flat situated on the 5th floor with dual elevators and 24-hour sweet municipal water.\n\nKey Highlights for Community Living:\n• Just 3 minutes walk to Uzri Masjid and Hasanabad Dargah\n• FMB Thaali kitchen drop service directly accessible at ground lobby\n• Piped PNG gas, semi-furnished modular kitchen, built-in teak wardrobes\n• High natural cross-ventilation and quiet mumin-majority building society\n• Strictly ZERO BROKERAGE.\n\nDirect contact on WhatsApp: wa.me/919820011223 or view video walkthrough on https://youtube.com/watch?v=flat_walkthrough',
     price: 52000,
     isNegotiable: true,
     condition: 'NOT_APPLICABLE',

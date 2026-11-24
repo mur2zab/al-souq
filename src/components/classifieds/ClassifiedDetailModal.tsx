@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useApp } from '@/context/AppContext';
 import { maskPhoneNumber } from '@/utils/whatsapp';
+import { SmartDescription } from '@/components/common/SmartDescription';
 import {
   X,
   MapPin,
@@ -282,9 +283,9 @@ export const ClassifiedDetailModal: React.FC = () => {
             <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
               Description & Highlights
             </h4>
-            <p className="text-xs text-slate-800 leading-relaxed whitespace-pre-line bg-surface-muted/30 p-3.5 rounded-xl border border-border/60">
-              {listing.description}
-            </p>
+            <div className="bg-surface-muted/30 p-3.5 rounded-xl border border-border/60">
+              <SmartDescription content={listing.description} className="text-xs" />
+            </div>
           </div>
 
           {/* Seller Trust Profile & Contact Box */}

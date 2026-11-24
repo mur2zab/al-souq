@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { FeedPost } from '@/types';
+import { SmartDescription } from '@/components/common/SmartDescription';
 import { useApp } from '@/context/AppContext';
 import {
   Heart,
@@ -236,9 +237,7 @@ export const FeedCard: React.FC<FeedCardProps> = ({ post }) => {
 
       {/* Caption & Tags */}
       <div className="px-4 py-3 space-y-2.5">
-        <p className="text-xs text-slate-800 leading-relaxed whitespace-pre-line font-normal">
-          {post.caption}
-        </p>
+        <SmartDescription content={post.caption} className="text-xs" />
 
         {/* Category Tags */}
         <div className="flex flex-wrap gap-1.5 pt-1">

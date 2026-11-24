@@ -12,6 +12,7 @@ import {
   ShieldCheck,
   Flame,
 } from 'lucide-react';
+import { SmartDescription } from '@/components/common/SmartDescription';
 
 export const StoryViewerModal: React.FC = () => {
   const {
@@ -199,9 +200,9 @@ export const StoryViewerModal: React.FC = () => {
           </div>
 
           {/* Caption */}
-          <p className="text-white text-xs leading-relaxed line-clamp-3 font-normal drop-shadow-sm">
-            {currentStory.caption}
-          </p>
+          <div className="text-white text-xs leading-relaxed max-h-24 overflow-y-auto">
+            <SmartDescription content={currentStory.caption} showQuickLinksBar={false} className="text-white text-xs" />
+          </div>
 
           {/* Order on WhatsApp CTA */}
           <button

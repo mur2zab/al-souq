@@ -19,7 +19,9 @@ export const metadata: Metadata = {
   authors: [{ name: 'Al-Souq Platform Team' }],
   manifest: '/manifest.json',
   icons: {
-    icon: '/favicon.ico',
+    icon: '/icon.svg',
+    shortcut: '/icon.svg',
+    apple: '/icon.svg',
   },
 };
 

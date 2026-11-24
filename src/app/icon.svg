@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Deep Royal Emerald Gradient -->
+    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0E4D40"/>
+      <stop offset="50%" stop-color="#09332A"/>
+      <stop offset="100%" stop-color="#041C16"/>
+    </linearGradient>
+
+    <!-- Royal Metallic Gold Gradient -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF0A8"/>
+      <stop offset="30%" stop-color="#F2D06B"/>
+      <stop offset="70%" stop-color="#D4AF37"/>
+      <stop offset="100%" stop-color="#9A7718"/>
+    </linearGradient>
+
+    <!-- Subtle Inner Gold Glow -->
+    <radialGradient id="goldGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#F2D06B" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#09332A" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Drop Shadow for Centerpiece -->
+    <filter id="goldShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <!-- Background Squircle / Shield -->
+  <rect x="16" y="16" width="480" height="480" rx="120" fill="url(#emeraldGrad)"/>
+  
+  <!-- Outer Gold Border -->
+  <rect x="24" y="24" width="464" height="464" rx="112" fill="none" stroke="url(#goldGrad)" stroke-width="12" stroke-opacity="0.9"/>
+  <rect x="40" y="40" width="432" height="432" rx="96" fill="none" stroke="url(#goldGrad)" stroke-width="2" stroke-opacity="0.4" stroke-dasharray="8 6"/>
+
+  <!-- Center Ambient Radial Glow -->
+  <circle cx="256" cy="256" r="180" fill="url(#goldGlow)"/>
+
+  <!-- Center Emblem Group -->
+  <g filter="url(#goldShadow)">
+    <!-- Elegant Islamic Crescent -->
+    <path d="M 275,100 C 365,115 410,210 380,295 C 352,374 270,418 190,396 C 245,385 305,335 315,260 C 325,190 285,128 275,100 Z"
+          fill="url(#goldGrad)"/>
+
+    <!-- 8-Pointed Fatemi Star (Rub el Hizb) inside Crescent -->
+    <g transform="translate(225, 240) scale(0.95)">
+      <!-- First Square -->
+      <rect x="-55" y="-55" width="110" height="110" rx="12" fill="url(#goldGrad)"/>
+      <!-- Second Square rotated 45 deg -->
+      <rect x="-55" y="-55" width="110" height="110" rx="12" fill="url(#goldGrad)" transform="rotate(45)"/>
+      <!-- Inner Emerald Star Core -->
+      <circle cx="0" cy="0" r="32" fill="#09332A"/>
+      <!-- Central Gold Pearl -->
+      <circle cx="0" cy="0" r="14" fill="url(#goldGrad)"/>
+    </g>
+
+    <!-- Traditional Scale / Souq Arch Balance Bars -->
+    <path d="M 130,345 Q 256,380 382,345" fill="none" stroke="url(#goldGrad)" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="130" cy="345" r="7" fill="url(#goldGrad)"/>
+    <circle cx="382" cy="345" r="7" fill="url(#goldGrad)"/>
+    <circle cx="256" cy="365" r="9" fill="url(#goldGrad)"/>
+  </g>
+</svg>
