@@ -8,6 +8,8 @@ export const revalidate = 0;
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const shouldClean = searchParams.get('clean') === 'true';
+  const adminSecret =
+    request.headers.get('x-admin-secret') || searchParams.get('secret');
 
   const hasDbUrl = Boolean(process.env.DATABASE_URL);
   const dbUrlPrefix = process.env.DATABASE_URL
@@ -15,6 +17,15 @@ export async function GET(request: NextRequest) {
     : 'none';
 
   if (shouldClean) {
+    // Protect clean action with secret authorization check
+    const expectedSecret = process.env.ADMIN_DIAG_SECRET || 'alsouq-clean-secret-2026';
+    if (!adminSecret || adminSecret !== expectedSecret) {
+      return NextResponse.json(
+        { success: false, message: 'Unauthorized. Secret key required for data reset operations.' },
+        { status: 401 }
+      );
+    }
+
     const cleanResult = await cleanAllDummyData();
     dbStore.resetToEmpty();
     return NextResponse.json({
@@ -26,21 +37,19 @@ export async function GET(request: NextRequest) {
 
   const sql = getDb();
   let dbCounts: any = null;
-  let remainingUsers: any[] = [];
 
   if (sql) {
     try {
       await initPostgresTables();
-      const users = await sql`SELECT id, email, full_name, role FROM alsouq_users`;
+      const users = await sql`SELECT count(*) FROM alsouq_users`;
       const classifieds = await sql`SELECT count(*) FROM alsouq_classifieds`;
       const posts = await sql`SELECT count(*) FROM alsouq_posts`;
       const stories = await sql`SELECT count(*) FROM alsouq_stories`;
       const leads = await sql`SELECT count(*) FROM alsouq_leads`;
       const verifications = await sql`SELECT count(*) FROM alsouq_verifications`;
 
-      remainingUsers = users;
       dbCounts = {
-        users: users.length,
+        users: Number(users[0].count),
         classifieds: Number(classifieds[0].count),
         posts: Number(posts[0].count),
         stories: Number(stories[0].count),
@@ -53,11 +62,11 @@ export async function GET(request: NextRequest) {
   }
 
   return NextResponse.json({
+    status: 'operational',
     hasDatabaseUrl: hasDbUrl,
     dbHost: dbUrlPrefix,
     isVercel: Boolean(process.env.VERCEL),
     postgresCounts: dbCounts,
-    users: remainingUsers,
     localDiskCounts: {
       users: dbStore.users.length,
       classifieds: dbStore.classifieds.length,

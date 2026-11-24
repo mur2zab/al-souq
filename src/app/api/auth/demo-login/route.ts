@@ -21,6 +21,14 @@ const FALLBACK_ADMIN: User = {
 
 export async function POST(request: NextRequest) {
   try {
+    // In production, block demo persona switching
+    if (process.env.NODE_ENV === 'production') {
+      return NextResponse.json(
+        { success: false, message: 'Demo persona switching is disabled in production.' },
+        { status: 403 }
+      );
+    }
+
     const { role } = await request.json();
 
     const adminUser = dbStore.users.find((u) => u.role === 'ADMIN') || dbStore.users[0] || FALLBACK_ADMIN;
@@ -107,7 +115,7 @@ export async function POST(request: NextRequest) {
 
     response.cookies.set('alsouq_session', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: (process.env.NODE_ENV as string) === 'production',
       sameSite: 'lax',
       path: '/',
       maxAge: 7 * 24 * 60 * 60,

@@ -229,7 +229,7 @@ export async function initPostgresTables() {
       // Seed Default Admin User if users table is empty
       const usersCount = await sql`SELECT count(*) FROM alsouq_users`;
       if (Number(usersCount[0].count) === 0) {
-        const defaultAdminPassword = process.env.ADMIN_PASSWORD || 'Admin@123';
+        const defaultAdminPassword = process.env.ADMIN_PASSWORD || 'Admin@AlSouq2026';
         const defaultAdminEmail = process.env.ADMIN_EMAIL || 'admin@alsouq.community';
         await sql`
           INSERT INTO alsouq_users (

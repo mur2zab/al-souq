@@ -30,8 +30,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const [authMode, setAuthMode] = useState<'PASSWORD' | 'OTP'>('PASSWORD');
 
   // Login form state
-  const [identifier, setIdentifier] = useState('murtuza.b@example.com');
-  const [password, setPassword] = useState('Mumin@123');
+  const [identifier, setIdentifier] = useState('');
+  const [password, setPassword] = useState('');
   const [otp, setOtp] = useState('');
   const [otpSent, setOtpSent] = useState(false);
 
@@ -251,7 +251,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                   onClick={() => {
                     setAuthMode('OTP');
                     setOtpSent(true);
-                    setOtp('123456');
                   }}
                   className={`text-[11px] font-bold px-2 py-0.5 rounded-lg border ${
                     authMode === 'OTP'
@@ -275,7 +274,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                   required
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
-                  placeholder="murtuza.b@example.com or 30491823"
+                  placeholder="Enter email, phone, or ITS"
                   className="w-full pl-9 pr-3 py-2 rounded-xl border border-border bg-surface text-slate-900 text-xs focus:outline-none focus:border-emerald-800"
                 />
               </div>
@@ -285,7 +284,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               <div>
                 <div className="flex items-center justify-between mb-1">
                   <label className="text-xs font-bold text-slate-700">Password</label>
-                  <span className="text-[10px] text-slate-400">Default: Mumin@123</span>
                 </div>
                 <div className="relative">
                   <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
@@ -303,7 +301,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               <div>
                 <div className="flex items-center justify-between mb-1">
                   <label className="text-xs font-bold text-slate-700">WhatsApp 6-Digit OTP</label>
-                  <span className="text-[10px] text-emerald-700 font-bold">Auto-filled: 123456</span>
                 </div>
                 <div className="relative">
                   <KeyRound className="w-4 h-4 text-emerald-700 absolute left-3 top-3" />
@@ -312,7 +309,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                     maxLength={6}
                     value={otp}
                     onChange={(e) => setOtp(e.target.value)}
-                    placeholder="123456"
+                    placeholder="••••••"
                     className="w-full pl-9 pr-3 py-2 rounded-xl border border-border bg-surface text-slate-900 text-xs font-mono font-bold tracking-widest focus:outline-none focus:border-emerald-800"
                   />
                 </div>

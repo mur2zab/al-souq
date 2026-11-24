@@ -25,28 +25,26 @@ export async function POST(request: NextRequest) {
 
     if (!userWithAuth) {
       return NextResponse.json(
-        { success: false, message: 'No community account found with these details.' },
-        { status: 404 }
+        { success: false, message: 'Invalid credentials. Please verify your details and try again.' },
+        { status: 401 }
       );
     }
 
-    // OTP verification flow (demo code '123456' or any 6-digit number)
+    // Verify Password
     let isValid = false;
-    if (otp) {
-      if (otp === '123456' || otp.length === 6) {
-        isValid = true;
-      }
-    } else if (password) {
+    if (password) {
       isValid = verifyPassword(password, userWithAuth.passwordHash || '');
-      // If default password "Mumin@123" or "Admin@123"
-      if (!isValid && (password === 'Mumin@123' || password === 'Admin@123')) {
-        isValid = true;
-      }
+    } else if (otp) {
+      // In production without an SMS/WhatsApp gateway integrated, reject arbitrary OTPs
+      return NextResponse.json(
+        { success: false, message: 'WhatsApp OTP is not enabled for this account. Please sign in with your password.' },
+        { status: 400 }
+      );
     }
 
     if (!isValid) {
       return NextResponse.json(
-        { success: false, message: 'Invalid credentials or OTP. Try password "Mumin@123" or OTP "123456".' },
+        { success: false, message: 'Invalid credentials. Please verify your email, phone, or password.' },
         { status: 401 }
       );
     }

@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import crypto from 'crypto';
 import {
   SEED_BUSINESSES,
   SEED_CLASSIFIEDS,
@@ -38,8 +39,10 @@ const BUNDLED_DB_FILE = path.join(process.cwd(), '.data', 'alsouq_database.json'
 const WRITABLE_DIR = IS_VERCEL ? '/tmp' : path.join(process.cwd(), '.data');
 const DB_FILE = IS_VERCEL ? path.join('/tmp', 'alsouq_database.json') : BUNDLED_DB_FILE;
 
-// Default initial password hash for all seed users ("Mumin@123")
-const DEFAULT_PASSWORD_HASH = hashPassword('Mumin@123');
+// Generate secure non-guessable initial hash for seed accounts
+const DEFAULT_PASSWORD_HASH = hashPassword(
+  process.env.DEFAULT_SEED_PASSWORD || crypto.randomBytes(16).toString('hex')
+);
 
 class ServerDatabaseStore {
   public users: UserWithAuth[] = [];
@@ -117,7 +120,7 @@ class ServerDatabaseStore {
   }
 
   public resetToEmpty(
-    adminPassword = process.env.ADMIN_PASSWORD || 'Admin@123',
+    adminPassword = process.env.ADMIN_PASSWORD || 'Admin@AlSouq2026',
     adminEmail = process.env.ADMIN_EMAIL || 'admin@alsouq.community'
   ) {
     this.users = [
