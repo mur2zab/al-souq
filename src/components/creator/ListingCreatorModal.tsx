@@ -17,6 +17,7 @@ import {
   Utensils,
   Check,
   Zap,
+  RotateCcw,
 } from 'lucide-react';
 
 export const ListingCreatorModal: React.FC = () => {
@@ -38,31 +39,52 @@ export const ListingCreatorModal: React.FC = () => {
   const [price, setPrice] = useState<string>('');
   const [cityId, setCityId] = useState(currentUser.cityId || 'mumbai');
   const [mohalla, setMohalla] = useState(currentUser.mohallaName || 'Mazgaon (Hasanabad / Saifee Park)');
-  const [whatsappNumber, setWhatsappNumber] = useState(currentUser.phone || '+91 98200 11223');
+  const [whatsappNumber, setWhatsappNumber] = useState(currentUser.phone || '');
 
   // Visual Feed Specific Fields
   const [businessCategory, setBusinessCategory] = useState<BusinessCategory>('FOOD_CATERING');
   const [isAvailableToday, setIsAvailableToday] = useState(true);
   const [todayDropDeadline, setTodayDropDeadline] = useState('Order before 5:00 PM');
-  const [tags, setTags] = useState('Thaali, Special, Mazgaon');
+  const [tags, setTags] = useState('');
 
   // Classified Specific Fields
   const [classifiedCategory, setClassifiedCategory] = useState<ClassifiedCategory>('REAL_ESTATE_RENT');
   const [condition, setCondition] = useState<ClassifiedCondition>('LIKE_NEW');
-  const [bhk, setBhk] = useState('2 BHK');
-  const [carpetArea, setCarpetArea] = useState('780');
-  const [nearMasjid, setNearMasjid] = useState('Uzri Masjid (3 mins walk)');
+  const [bhk, setBhk] = useState('');
+  const [carpetArea, setCarpetArea] = useState('');
+  const [nearMasjid, setNearMasjid] = useState('');
   const [thaaliFriendly, setThaaliFriendly] = useState(true);
-  const [deposit, setDeposit] = useState('100000');
+  const [deposit, setDeposit] = useState('');
   const [furnishing, setFurnishing] = useState<'Fully Furnished' | 'Semi-Furnished' | 'Unfurnished'>('Semi-Furnished');
 
   // Image Upload & Client-Side Compression
   const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
   const [compressedResult, setCompressedResult] = useState<CompressionResult | null>(null);
   const [isCompressing, setIsCompressing] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState<string>(
-    'https://images.unsplash.com/photo-1541544741938-0af808871cc0?auto=format&fit=crop&w=1080&q=80'
-  );
+  const [previewUrl, setPreviewUrl] = useState<string>('');
+
+  const resetForm = () => {
+    setTitle('');
+    setDescription('');
+    setPrice('');
+    setCityId(currentUser.cityId || 'mumbai');
+    setMohalla(currentUser.mohallaName || 'Mazgaon (Hasanabad / Saifee Park)');
+    setWhatsappNumber(currentUser.phone || '');
+    setTags('');
+    setTodayDropDeadline('Order before 5:00 PM');
+    setIsAvailableToday(true);
+    setClassifiedCategory('REAL_ESTATE_RENT');
+    setCondition('LIKE_NEW');
+    setBhk('');
+    setCarpetArea('');
+    setNearMasjid('');
+    setThaaliFriendly(true);
+    setDeposit('');
+    setFurnishing('Semi-Furnished');
+    setSelectedImageFile(null);
+    setCompressedResult(null);
+    setPreviewUrl('');
+  };
 
   if (!isPostModalOpen) return null;
 
@@ -94,6 +116,12 @@ export const ListingCreatorModal: React.FC = () => {
       return;
     }
 
+    const finalImage =
+      previewUrl ||
+      (creatorMode === 'VISUAL_FEED'
+        ? 'https://images.unsplash.com/photo-1541544741938-0af808871cc0?auto=format&fit=crop&w=1080&q=80'
+        : 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=600&q=80');
+
     if (creatorMode === 'VISUAL_FEED') {
       addNewPost({
         businessId: currentUser.id,
@@ -102,8 +130,8 @@ export const ListingCreatorModal: React.FC = () => {
         hasRazaBadge: true,
         authorId: currentUser.id,
         postType: 'PHOTO_CAROUSEL',
-        mediaUrls: [previewUrl],
-        caption: `${title}\n\n${description}`,
+        mediaUrls: [finalImage],
+        caption: description ? `${title}\n\n${description}` : title,
         priceInr: price ? Number(price) : undefined,
         isAvailableToday,
         todayDropDeadline: isAvailableToday ? todayDropDeadline : undefined,
@@ -111,15 +139,15 @@ export const ListingCreatorModal: React.FC = () => {
         cityName: currentCityObj?.name || 'Mumbai',
         mohallaName: mohalla,
         category: businessCategory,
-        tags: tags.split(',').map((t) => t.trim()).filter(Boolean),
-        whatsappNumber,
+        tags: tags ? tags.split(',').map((t) => t.trim()).filter(Boolean) : [],
+        whatsappNumber: whatsappNumber || currentUser.phone || '',
       });
     } else {
       addNewClassified({
         sellerId: currentUser.id,
         sellerName: currentUser.fullName,
         sellerAvatar: currentUser.avatarUrl,
-        sellerPhone: whatsappNumber,
+        sellerPhone: whatsappNumber || currentUser.phone || '',
         cityId,
         cityName: currentCityObj?.name || 'Mumbai',
         mohallaName: mohalla,
@@ -129,16 +157,16 @@ export const ListingCreatorModal: React.FC = () => {
         price: Number(price) || 0,
         isNegotiable: true,
         condition,
-        mediaUrls: [previewUrl],
+        mediaUrls: [finalImage],
         status: 'ACTIVE',
         realEstateMeta:
           classifiedCategory === 'REAL_ESTATE_RENT' ||
           classifiedCategory === 'REAL_ESTATE_SALE' ||
           classifiedCategory === 'PG_FLATMATE'
             ? {
-                bhk,
-                carpetArea: Number(carpetArea) || 600,
-                nearMasjid,
+                bhk: bhk || '1 BHK',
+                carpetArea: Number(carpetArea) || 500,
+                nearMasjid: nearMasjid || 'Near Masjid',
                 thaaliFriendly,
                 brokerage: 'ZERO_BROKERAGE',
                 deposit: Number(deposit) || 0,
@@ -148,6 +176,8 @@ export const ListingCreatorModal: React.FC = () => {
       });
     }
 
+    // Completely reset form data so the next post starts clean
+    resetForm();
     setIsPostModalOpen(false);
   };
 
@@ -175,12 +205,23 @@ export const ListingCreatorModal: React.FC = () => {
               </p>
             </div>
           </div>
-          <button
-            onClick={() => setIsPostModalOpen(false)}
-            className="p-1 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-200/50 transition"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={resetForm}
+              title="Reset all fields"
+              className="px-2.5 py-1 text-[11px] font-bold text-slate-500 hover:text-emerald-900 bg-surface hover:bg-emerald-50 border border-border rounded-lg transition flex items-center gap-1 shadow-2xs"
+            >
+              <RotateCcw className="w-3 h-3" />
+              <span>Clear</span>
+            </button>
+            <button
+              onClick={() => setIsPostModalOpen(false)}
+              className="p-1 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-200/50 transition"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Creator Mode Switcher Tabs */}
@@ -223,8 +264,15 @@ export const ListingCreatorModal: React.FC = () => {
             </label>
             <div className="border-2 border-dashed border-emerald-800/30 rounded-2xl p-3 bg-surface-muted/30">
               <div className="flex flex-col sm:flex-row items-center gap-3">
-                <div className="relative aspect-[4/3] w-36 rounded-xl overflow-hidden border border-border shadow-xs bg-slate-900 flex-shrink-0">
-                  <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
+                <div className="relative aspect-[4/3] w-36 rounded-xl overflow-hidden border border-border shadow-xs bg-slate-100 flex-shrink-0 flex items-center justify-center">
+                  {previewUrl ? (
+                    <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="flex flex-col items-center justify-center p-3 text-center text-slate-400">
+                      <Upload className="w-6 h-6 mb-1 text-slate-400" />
+                      <span className="text-[10px] font-semibold text-slate-500">No photo chosen</span>
+                    </div>
+                  )}
                   {isCompressing && (
                     <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-gold-300 text-[10px] font-bold">
                       Compressing...
