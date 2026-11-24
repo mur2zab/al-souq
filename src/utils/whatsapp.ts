@@ -9,6 +9,7 @@ export interface WhatsAppInquiryPayload {
   price?: number;
   location?: string;
   itemId: string;
+  sellerId?: string;
   sellerName?: string;
   currentUserFullName?: string;
   currentUserIts?: string;

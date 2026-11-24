@@ -56,6 +56,7 @@ export const ClassifiedDetailModal: React.FC = () => {
       price: listing.price,
       location: `${listing.cityName} (${listing.mohallaName})`,
       itemId: listing.id,
+      sellerId: listing.sellerId,
       sellerName: listing.sellerName,
     });
   };

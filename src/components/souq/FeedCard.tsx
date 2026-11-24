@@ -46,6 +46,7 @@ export const FeedCard: React.FC<FeedCardProps> = ({ post }) => {
       price: post.priceInr,
       location: `${post.cityName} (${post.mohallaName})`,
       itemId: post.id,
+      sellerId: post.authorId || post.businessId,
       sellerName: post.businessName,
     });
   };

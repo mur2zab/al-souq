@@ -112,8 +112,8 @@ class ServerDatabaseStore {
       return;
     }
 
-    // Otherwise initialize with sample seed data
-    this.resetToSeed();
+    // Initialize with empty clean state (0 dummy listings, 0 dummy posts)
+    this.resetToEmpty();
   }
 
   public resetToEmpty(

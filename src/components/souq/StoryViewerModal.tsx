@@ -87,6 +87,7 @@ export const StoryViewerModal: React.FC = () => {
       price: currentStory.priceInr,
       location: `${currentStory.cityName} (${currentStory.mohallaName})`,
       itemId: currentStory.id,
+      sellerId: currentStory.businessId,
       sellerName: currentStory.businessName,
     });
   };

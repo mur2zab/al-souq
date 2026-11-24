@@ -221,6 +221,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         }
       })
       .catch((err) => console.log('Stories sync:', err));
+
+    // 5. Load Real WhatsApp Leads from Backend
+    fetch('/api/leads')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.leads)) {
+          setLeadEvents(data.leads);
+        }
+      })
+      .catch((err) => console.log('Leads sync:', err));
   }, []);
 
   // Sync admin verification queue only if logged in user has ADMIN role
@@ -427,12 +437,19 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         itemId: payload.itemId,
         itemType: payload.itemType,
         itemTitle: payload.title,
-        sellerId: payload.sellerName || 'Seller',
+        sellerId: payload.sellerId || payload.sellerName || 'Seller',
         buyerName: currentUser.fullName,
         buyerIts: currentUser.itsNumber,
         buyerMohalla: currentUser.mohallaName,
       }),
-    }).catch(console.error);
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.lead) {
+          setLeadEvents((prev) => [data.lead, ...prev]);
+        }
+      })
+      .catch(console.error);
 
     // 4. Generate Link with contextual greeting and redirect
     const url = generateWhatsAppLink({
