@@ -1,7 +1,10 @@
 import crypto from 'crypto';
 import { User } from '@/types';
 
-const SECRET_KEY = process.env.JWT_SECRET || 'alsouq-bohra-community-secure-salt-2026';
+const SECRET_KEY =
+  process.env.SESSION_SECRET ||
+  process.env.JWT_SECRET ||
+  'alsouq-bohra-community-secure-salt-2026';
 
 /**
  * Hashes password using native PBKDF2 with unique salt
