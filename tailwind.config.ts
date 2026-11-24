@@ -54,6 +54,8 @@ const config: Config = {
         serif: ["Playfair Display", "Georgia", "Cambria", "serif"],
       },
       boxShadow: {
+        xs: "0 1px 2px rgba(0, 0, 0, 0.05)",
+        "2xs": "0 1px 1px rgba(0, 0, 0, 0.03)",
         subtle: "0 2px 10px rgba(13, 74, 62, 0.04)",
         elevated: "0 10px 30px rgba(13, 74, 62, 0.08)",
         gold: "0 4px 14px rgba(212, 175, 55, 0.25)",

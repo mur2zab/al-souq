@@ -108,13 +108,13 @@ export const Header: React.FC = () => {
             </button>
           )}
 
-          {/* Quick Post Button */}
+          {/* Quick Post Button (Desktop only, mobile uses bottom floating Post) */}
           <button
             onClick={() => setIsPostModalOpen(true)}
-            className="flex items-center gap-1 bg-emerald-900 hover:bg-emerald-950 text-white font-bold px-3 py-1.5 rounded-xl text-xs shadow-sm transition active:scale-95"
+            className="hidden md:flex items-center gap-1 bg-emerald-900 hover:bg-emerald-950 text-white font-bold px-3 py-1.5 rounded-xl text-xs shadow-sm transition active:scale-95"
           >
             <PlusCircle className="w-3.5 h-3.5 text-gold-400" />
-            <span className="hidden sm:inline">Post</span>
+            <span>Post</span>
           </button>
 
           {/* User Menu */}
@@ -126,12 +126,20 @@ export const Header: React.FC = () => {
               <img
                 src={currentUser.avatarUrl || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=250&q=80'}
                 alt={currentUser.fullName}
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=250&q=80';
+                }}
                 className="w-8 h-8 rounded-full object-cover border-2 border-emerald-800 shadow-xs"
               />
             </button>
 
             {showUserMenu && (
-              <div className="absolute right-0 top-full mt-2 w-56 bg-surface text-slate-800 rounded-2xl shadow-elevated border border-border p-2.5 z-50 animate-in fade-in slide-in-from-top-1 text-xs space-y-2">
+              <>
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => setShowUserMenu(false)}
+                />
+                <div className="absolute right-0 top-full mt-2 w-56 bg-surface text-slate-800 rounded-2xl shadow-elevated border border-border p-2.5 z-50 animate-in fade-in slide-in-from-top-1 text-xs space-y-2">
                 <div className="px-2 py-1.5 border-b border-border">
                   <div className="font-bold text-slate-900 truncate">
                     {currentUser.fullName}
@@ -178,7 +186,8 @@ export const Header: React.FC = () => {
                   </button>
                 </div>
               </div>
-            )}
+            </>
+          )}
           </div>
         </div>
       </div>

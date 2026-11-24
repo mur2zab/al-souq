@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { useApp } from '@/context/AppContext';
 import {
   Compass,
@@ -8,6 +9,7 @@ import {
   PlusCircle,
   BarChart3,
   ShieldCheck,
+  User as UserIcon,
 } from 'lucide-react';
 
 interface BottomNavProps {
@@ -70,7 +72,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, setActiveTab })
             <span className="text-[10px]">Seller Hub</span>
           </button>
 
-          {currentUser.role === 'ADMIN' && (
+          {currentUser.role === 'ADMIN' ? (
             <button
               onClick={() => setActiveTab('ADMIN_TRUST')}
               className={`flex flex-col items-center gap-1 py-1 px-3 rounded-lg transition active:scale-95 ${
@@ -82,6 +84,14 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, setActiveTab })
               <ShieldCheck className={`w-5 h-5 ${activeTab === 'ADMIN_TRUST' ? 'stroke-[2.5px] text-emerald-800' : ''}`} />
               <span className="text-[10px]">Admin</span>
             </button>
+          ) : (
+            <Link
+              href="/profile"
+              className="flex flex-col items-center gap-1 py-1 px-3 rounded-lg transition active:scale-95 text-slate-500 hover:text-slate-800"
+            >
+              <UserIcon className="w-5 h-5" />
+              <span className="text-[10px]">Profile</span>
+            </Link>
           )}
         </div>
       </nav>

@@ -697,6 +697,16 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess }) => {
                 </span>
                 <ArrowRight className="w-4 h-4 text-gold-400" />
               </button>
+
+              {(!itsCardProof || !livePhoto) && (
+                <p className="text-[11px] text-amber-800 bg-amber-50 border border-amber-200/80 rounded-lg p-2 text-center mt-2 font-medium">
+                  {!itsCardProof && !livePhoto
+                    ? '⚠️ Please upload your ITS card and capture a live snapshot above to submit.'
+                    : !itsCardProof
+                    ? '⚠️ Please upload your ITS card above to proceed.'
+                    : '⚠️ Please capture a live selfie snapshot above to proceed.'}
+                </p>
+              )}
             </div>
           </form>
         )}

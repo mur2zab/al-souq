@@ -20,6 +20,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Briefcase,
+  Check,
 } from 'lucide-react';
 
 export const ClassifiedDetailModal: React.FC = () => {
@@ -66,8 +67,14 @@ export const ClassifiedDetailModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-surface w-full max-w-2xl rounded-3xl shadow-elevated border border-border overflow-hidden flex flex-col max-h-[92vh]">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200"
+      onClick={() => setSelectedClassifiedDetail(null)}
+    >
+      <div
+        className="bg-surface w-full max-w-2xl rounded-3xl shadow-elevated border border-border overflow-hidden flex flex-col max-h-[92vh]"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Top Modal Header */}
         <div className="px-5 py-3 border-b border-border flex items-center justify-between bg-surface-muted/50">
           <div className="flex items-center gap-2">
@@ -83,11 +90,11 @@ export const ClassifiedDetailModal: React.FC = () => {
           <div className="flex items-center gap-2">
             <button
               onClick={handleShare}
-              className="p-1.5 rounded-full text-slate-500 hover:text-emerald-900 hover:bg-slate-200/50 transition"
-              title="Share listing"
+              className="w-7 h-7 flex items-center justify-center rounded-full text-slate-500 hover:text-emerald-900 hover:bg-slate-200/50 transition"
+              title={copiedLink ? 'Link copied!' : 'Share listing'}
             >
               {copiedLink ? (
-                <span className="text-[10px] text-emerald-800 font-bold">Copied!</span>
+                <Check className="w-4 h-4 text-emerald-700" />
               ) : (
                 <Share2 className="w-4 h-4" />
               )}

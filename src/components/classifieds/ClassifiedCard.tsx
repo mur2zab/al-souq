@@ -46,6 +46,10 @@ export const ClassifiedCard: React.FC<ClassifiedCardProps> = ({ listing }) => {
         <img
           src={listing.mediaUrls[0] || 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=600&q=80'}
           alt={listing.title}
+          onError={(e) => {
+            (e.target as HTMLImageElement).src =
+              'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=600&q=80';
+          }}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
 
@@ -131,6 +135,10 @@ export const ClassifiedCard: React.FC<ClassifiedCardProps> = ({ listing }) => {
             <img
               src={listing.sellerAvatar}
               alt={listing.sellerName}
+              onError={(e) => {
+                (e.target as HTMLImageElement).src =
+                  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80';
+              }}
               className="w-5 h-5 rounded-full object-cover"
             />
             <span className="text-slate-700 font-medium truncate max-w-[110px]">

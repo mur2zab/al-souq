@@ -20,8 +20,14 @@ export const CitySelectorModal: React.FC = () => {
   const currentCityObj = CITIES.find((c) => c.id === selectedCityId);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-surface w-full max-w-lg rounded-2xl shadow-elevated border border-border overflow-hidden flex flex-col max-h-[85vh]">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+      onClick={() => setIsCityModalOpen(false)}
+    >
+      <div
+        className="bg-surface w-full max-w-lg rounded-2xl shadow-elevated border border-border overflow-hidden flex flex-col max-h-[85vh]"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="px-5 py-4 border-b border-border flex items-center justify-between bg-surface-muted/50">
           <div className="flex items-center gap-2">

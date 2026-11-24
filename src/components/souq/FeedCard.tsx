@@ -65,6 +65,10 @@ export const FeedCard: React.FC<FeedCardProps> = ({ post }) => {
             <img
               src={post.businessAvatar}
               alt={post.businessName}
+              onError={(e) => {
+                (e.target as HTMLImageElement).src =
+                  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80';
+              }}
               className="w-10 h-10 rounded-full object-cover border border-border"
             />
             {post.hasRazaBadge && (
@@ -83,7 +87,7 @@ export const FeedCard: React.FC<FeedCardProps> = ({ post }) => {
                 {post.businessName}
               </h3>
               {post.hasRazaBadge && (
-                <span className="text-[10px] bg-gold-50 text-gold-800 font-bold px-1.5 py-0.2 rounded border border-gold-200">
+                <span className="text-[10px] bg-gold-50 text-gold-800 font-bold px-1.5 py-0.5 rounded border border-gold-200">
                   Raza Badge
                 </span>
               )}
@@ -115,6 +119,10 @@ export const FeedCard: React.FC<FeedCardProps> = ({ post }) => {
         <img
           src={post.mediaUrls[activeMediaIndex] || post.mediaUrls[0]}
           alt={post.caption.slice(0, 30)}
+          onError={(e) => {
+            (e.target as HTMLImageElement).src =
+              'https://images.unsplash.com/photo-1541544741938-0af808871cc0?auto=format&fit=crop&w=1080&q=80';
+          }}
           className="w-full h-full object-cover transition-all duration-300"
         />
 
@@ -160,7 +168,7 @@ export const FeedCard: React.FC<FeedCardProps> = ({ post }) => {
             )}
 
             {/* Carousel Dots */}
-            <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-black/40 px-2 py-0.5 rounded-full backdrop-blur-xs">
+            <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-black/40 px-2 py-0.5 rounded-full backdrop-blur-sm">
               {post.mediaUrls.map((_, idx) => (
                 <div
                   key={idx}
@@ -208,13 +216,11 @@ export const FeedCard: React.FC<FeedCardProps> = ({ post }) => {
           {/* Share */}
           <button
             onClick={handleShare}
-            className="text-slate-700 hover:text-emerald-900 transition active:scale-90 relative"
-            title="Share Link"
+            className="w-7 h-7 flex items-center justify-center text-slate-700 hover:text-emerald-900 transition active:scale-90 rounded-full hover:bg-slate-100"
+            title={copiedLink ? 'Link copied!' : 'Share Link'}
           >
             {copiedLink ? (
-              <span className="text-[10px] bg-emerald-800 text-white px-2 py-0.5 rounded-full font-bold">
-                Copied!
-              </span>
+              <Check className="w-4 h-4 text-emerald-700" />
             ) : (
               <Share2 className="w-5 h-5" />
             )}

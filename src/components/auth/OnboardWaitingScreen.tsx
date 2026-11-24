@@ -117,7 +117,7 @@ export const OnboardWaitingScreen: React.FC = () => {
           /* Waiting Status Banner */
           <div className="p-4 rounded-2xl bg-amber-50/80 border border-amber-300 text-amber-950 space-y-2 text-center">
             <div className="inline-flex items-center gap-1.5 bg-amber-200/60 text-amber-950 px-3 py-1 rounded-full text-xs font-bold font-mono">
-              <Clock className="w-3.5 h-3.5 text-amber-700 animate-spin" />
+              <Clock className="w-3.5 h-3.5 text-amber-700 animate-pulse" />
               <span>Awaiting Jamaat Admin Approval</span>
             </div>
             <h2 className="font-serif font-bold text-lg text-amber-950 pt-1">

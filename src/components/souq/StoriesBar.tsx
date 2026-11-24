@@ -49,6 +49,10 @@ export const StoriesBar: React.FC = () => {
                   <img
                     src={story.businessAvatar}
                     alt={story.businessName}
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src =
+                        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80';
+                    }}
                     className="w-12 h-12 rounded-full object-cover"
                   />
                 </div>

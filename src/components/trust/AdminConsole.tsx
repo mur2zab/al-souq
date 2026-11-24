@@ -433,7 +433,7 @@ export const AdminConsole: React.FC = () => {
                       {biz.businessName}
                     </h4>
                     {biz.hasRazaBadge && (
-                      <span className="text-[10px] bg-gold-100 text-gold-900 font-bold px-1.5 py-0.2 rounded border border-gold-300">
+                      <span className="text-[10px] bg-gold-100 text-gold-900 font-bold px-1.5 py-0.5 rounded border border-gold-300">
                         Raza Badge
                       </span>
                     )}

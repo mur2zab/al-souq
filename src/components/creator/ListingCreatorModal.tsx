@@ -152,8 +152,14 @@ export const ListingCreatorModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-surface w-full max-w-xl rounded-3xl shadow-elevated border border-border overflow-hidden flex flex-col max-h-[92vh]">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200"
+      onClick={() => setIsPostModalOpen(false)}
+    >
+      <div
+        className="bg-surface w-full max-w-xl rounded-3xl shadow-elevated border border-border overflow-hidden flex flex-col max-h-[92vh]"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="px-5 py-4 border-b border-border flex items-center justify-between bg-surface-muted/50">
           <div className="flex items-center gap-2">
@@ -227,7 +233,7 @@ export const ListingCreatorModal: React.FC = () => {
                 </div>
 
                 <div className="flex-1 space-y-2 text-center sm:text-left">
-                  <label className="inline-block cursor-pointer bg-surface hover:bg-emerald-50 text-emerald-950 font-bold px-3 py-1.5 rounded-xl border border-border text-xs transition shadow-2xs">
+                  <label className="inline-block cursor-pointer bg-surface hover:bg-emerald-50 text-emerald-950 font-bold px-3 py-1.5 rounded-xl border border-border text-xs transition shadow-xs">
                     Choose Photo from Device
                     <input
                       type="file"

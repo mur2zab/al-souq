@@ -65,7 +65,7 @@ export default function HomeApp() {
   if (!authChecked || !isAuthenticated) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
-        <div className="w-10 h-10 border-3 border-emerald-900 border-t-transparent rounded-full animate-spin" />
+        <div className="w-10 h-10 border-[3px] border-emerald-900 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }

@@ -20,7 +20,7 @@ export default function LoginPage() {
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-700" />
               <span>{currentUser.fullName}</span>
               {currentUser.role === 'ADMIN' && (
-                <span className="text-[9px] bg-purple-100 text-purple-800 px-1.5 py-0.2 rounded font-bold ml-1">
+                <span className="text-[9px] bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded font-bold ml-1">
                   Admin
                 </span>
               )}
