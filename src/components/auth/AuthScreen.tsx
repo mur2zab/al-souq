@@ -45,6 +45,8 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess }) => {
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [otp, setOtp] = useState('');
+  const [whatsappOtpSent, setWhatsappOtpSent] = useState(false);
+  const [isSendingWaOtp, setIsSendingWaOtp] = useState(false);
 
   // Forgot Password Form State
   const [forgotStep, setForgotStep] = useState<'EMAIL' | 'RESET'>('EMAIL');
@@ -149,6 +151,35 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess }) => {
         setErrorMsg('');
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSendWhatsAppOtp = async () => {
+    if (!identifier.trim()) {
+      setErrorMsg('Please enter your email, phone, or 8-digit ITS number first.');
+      return;
+    }
+
+    setIsSendingWaOtp(true);
+    setErrorMsg('');
+    setSuccessMsg('');
+
+    try {
+      const res = await fetch('/api/auth/whatsapp-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ identifier: identifier.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || 'Could not send WhatsApp OTP.');
+      }
+      setWhatsappOtpSent(true);
+      setSuccessMsg(data.message);
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Failed to send WhatsApp OTP.');
+    } finally {
+      setIsSendingWaOtp(false);
     }
   };
 
@@ -508,14 +539,29 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess }) => {
                 </div>
               </div>
             ) : (
-              <div>
-                <label className="text-xs font-bold text-slate-800 block mb-1">
-                  6-Digit WhatsApp OTP
-                </label>
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-slate-800">
+                    6-Digit WhatsApp OTP
+                  </label>
+                  <button
+                    type="button"
+                    disabled={isSendingWaOtp}
+                    onClick={handleSendWhatsAppOtp}
+                    className="text-[11px] font-bold text-emerald-800 hover:text-emerald-950 underline disabled:opacity-50"
+                  >
+                    {isSendingWaOtp
+                      ? 'Sending...'
+                      : whatsappOtpSent
+                      ? 'Resend OTP'
+                      : 'Send OTP to WhatsApp'}
+                  </button>
+                </div>
                 <input
                   type="text"
                   maxLength={6}
-                  placeholder="Enter 6-digit OTP"
+                  required
+                  placeholder={whatsappOtpSent ? 'Enter 6-digit WhatsApp OTP' : 'Click "Send OTP to WhatsApp" first'}
                   value={otp}
                   onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-surface text-slate-900 text-xs font-mono tracking-widest text-center font-bold focus:outline-none focus:border-emerald-800"

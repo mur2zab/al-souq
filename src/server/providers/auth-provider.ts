@@ -5,6 +5,7 @@ import { verificationRepository } from '@/server/repositories/verification.repos
 import { createSessionToken, verifyPassword, verifySessionToken } from '@/server/auth/auth';
 import { getOtpStore } from '@/server/providers/otp-store';
 import { getEmailProvider } from '@/server/providers/email-provider';
+import { getWhatsAppProvider } from '@/server/providers/whatsapp-provider';
 import {
   validateEmail,
   validateItsNumber,
@@ -42,6 +43,14 @@ export interface RegisterUserInput {
 export interface IAuthProvider {
   readonly providerName: string;
   signInWithPassword(identifier: string, password: string): Promise<AuthResult>;
+  initiateWhatsAppOtp(identifier: string): Promise<{
+    success: boolean;
+    status: number;
+    message: string;
+    whatsappProvider?: string;
+    otpStoreProvider?: string;
+  }>;
+  signInWithWhatsAppOtp(identifier: string, otp: string): Promise<AuthResult>;
   registerUser(input: RegisterUserInput): Promise<AuthResult>;
   initiateForgotPassword(email: string): Promise<{
     success: boolean;
@@ -61,15 +70,7 @@ export interface IAuthProvider {
 export class LocalJwtAuthProvider implements IAuthProvider {
   public readonly providerName = 'local-jwt-postgres';
 
-  async signInWithPassword(identifier: string, password: string): Promise<AuthResult> {
-    if (!identifier || !password) {
-      return {
-        success: false,
-        status: 400,
-        message: 'Please enter your email, phone, or ITS ID and password.',
-      };
-    }
-
+  private async findUserByIdentifier(identifier: string) {
     let userWithAuth = await usersRepository.findByEmailOrPhone(identifier);
 
     // Support 8-digit ITS lookup
@@ -80,6 +81,19 @@ export class LocalJwtAuthProvider implements IAuthProvider {
       }
     }
 
+    return userWithAuth;
+  }
+
+  async signInWithPassword(identifier: string, password: string): Promise<AuthResult> {
+    if (!identifier || !password) {
+      return {
+        success: false,
+        status: 400,
+        message: 'Please enter your email, phone, or ITS ID and password.',
+      };
+    }
+
+    const userWithAuth = await this.findUserByIdentifier(identifier);
     if (!userWithAuth) {
       return {
         success: false,
@@ -104,6 +118,110 @@ export class LocalJwtAuthProvider implements IAuthProvider {
       success: true,
       status: 200,
       message: 'Logged in successfully',
+      user: safeUser,
+      token,
+    };
+  }
+
+  async initiateWhatsAppOtp(identifier: string) {
+    if (!identifier || !identifier.trim()) {
+      return {
+        success: false,
+        status: 400,
+        message: 'Please enter your registered email, phone, or 8-digit ITS ID.',
+      };
+    }
+
+    const userWithAuth = await this.findUserByIdentifier(identifier);
+    const otpStore = getOtpStore();
+    const waProvider = getWhatsAppProvider();
+
+    if (userWithAuth && userWithAuth.phone) {
+      const otp = crypto.randomInt(100000, 999999).toString();
+      const otpKey = `wa_login:${userWithAuth.id}`;
+
+      await otpStore.setOtp(otpKey, otp, 600);
+      await waProvider.sendLoginOtp(userWithAuth.phone, userWithAuth.fullName, otp);
+    }
+
+    return {
+      success: true,
+      status: 200,
+      message:
+        'If an account exists for these details, a 6-digit login code has been sent to your registered WhatsApp number (valid for 10 minutes).',
+      whatsappProvider: waProvider.providerName,
+      otpStoreProvider: otpStore.providerName,
+    };
+  }
+
+  async signInWithWhatsAppOtp(identifier: string, otp: string): Promise<AuthResult> {
+    if (!identifier || !otp) {
+      return {
+        success: false,
+        status: 400,
+        message: 'Please enter your account identifier and the 6-digit WhatsApp OTP.',
+      };
+    }
+
+    const cleanOtp = otp.trim();
+    if (!/^\d{6}$/.test(cleanOtp)) {
+      return {
+        success: false,
+        status: 400,
+        message: 'Please enter a valid 6-digit WhatsApp OTP.',
+      };
+    }
+
+    const userWithAuth = await this.findUserByIdentifier(identifier);
+    if (!userWithAuth) {
+      return {
+        success: false,
+        status: 401,
+        message: 'Invalid credentials or expired OTP.',
+      };
+    }
+
+    const otpKey = `wa_login:${userWithAuth.id}`;
+    const otpStore = getOtpStore();
+
+    const attempts = await otpStore.incrementAttempts(otpKey, 600);
+    if (attempts > 5) {
+      await otpStore.deleteOtp(otpKey);
+      return {
+        success: false,
+        status: 429,
+        message: 'Too many invalid OTP attempts. Please request a new WhatsApp OTP.',
+      };
+    }
+
+    const storedOtp = await otpStore.getOtp(otpKey);
+    if (!storedOtp) {
+      return {
+        success: false,
+        status: 401,
+        message: 'WhatsApp OTP has expired or has not been requested. Please request a new code.',
+      };
+    }
+
+    const a = Buffer.from(storedOtp, 'utf8');
+    const b = Buffer.from(cleanOtp, 'utf8');
+    if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) {
+      return {
+        success: false,
+        status: 401,
+        message: 'Incorrect WhatsApp OTP. Please check your WhatsApp messages and try again.',
+      };
+    }
+
+    await otpStore.deleteOtp(otpKey);
+
+    const { passwordHash, ...safeUser } = userWithAuth;
+    const token = createSessionToken(safeUser);
+
+    return {
+      success: true,
+      status: 200,
+      message: 'Signed in via WhatsApp OTP',
       user: safeUser,
       token,
     };

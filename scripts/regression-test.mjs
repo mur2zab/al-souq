@@ -227,6 +227,21 @@ async function runTests() {
     });
     assert(resBadReset.status === 400, 'Invalid reset OTP rejected with HTTP 400');
 
+    // WhatsApp OTP request & invalid OTP check
+    const resWaOtp = await fetch(`${BASE_URL}/api/auth/whatsapp-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ identifier: testUserEmail }),
+    });
+    assert(resWaOtp.status === 200, 'WhatsApp OTP endpoint accepts valid account identifier (HTTP 200)');
+
+    const resBadWaLogin = await fetch(`${BASE_URL}/api/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ identifier: testUserEmail, otp: '000000' }),
+    });
+    assert(resBadWaLogin.status === 401, 'Invalid WhatsApp OTP login rejected with HTTP 401');
+
     const rawCookie = resReg.headers.get('set-cookie');
     if (rawCookie) {
       sessionCookie = rawCookie.split(';')[0];

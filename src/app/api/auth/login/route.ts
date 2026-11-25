@@ -5,18 +5,11 @@ export async function POST(request: NextRequest) {
   try {
     const { identifier, password, otp } = await request.json();
 
-    if (otp && !password) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: 'WhatsApp OTP is not enabled for this account. Please sign in with your password.',
-        },
-        { status: 400 }
-      );
-    }
-
     const authProvider = getAuthProvider();
-    const result = await authProvider.signInWithPassword(identifier, password);
+    const result =
+      otp && !password
+        ? await authProvider.signInWithWhatsAppOtp(identifier, otp)
+        : await authProvider.signInWithPassword(identifier, password);
 
     if (!result.success || !result.user || !result.token) {
       return NextResponse.json(
