@@ -112,9 +112,10 @@ export const ClassifiedDetailModal: React.FC = () => {
             </button>
             <button
               onClick={() => setSelectedClassifiedDetail(null)}
-              className="p-1.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-200/50 transition"
+              className="px-3 py-1.5 min-h-[38px] rounded-xl bg-surface border border-border text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition flex items-center gap-1 text-xs font-bold shadow-2xs"
             >
-              <X className="w-5 h-5" />
+              <span>Close</span>
+              <X className="w-4 h-4" />
             </button>
           </div>
         </div>
@@ -281,10 +282,10 @@ export const ClassifiedDetailModal: React.FC = () => {
           {/* Description */}
           <div>
             <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-              Description & Highlights
+              Description &amp; Highlights
             </h4>
-            <div className="bg-surface-muted/30 p-3.5 rounded-xl border border-border/60">
-              <SmartDescription content={listing.description} className="text-xs" />
+            <div className="bg-surface-muted/30 p-4 rounded-xl border border-border/60">
+              <SmartDescription content={listing.description} className="text-sm" />
             </div>
           </div>
 
@@ -341,18 +342,30 @@ export const ClassifiedDetailModal: React.FC = () => {
               )}
             </div>
 
-            {/* Direct CTA */}
-            <button
-              onClick={handleWhatsAppChat}
-              className="w-full bg-[#25D366] hover:bg-[#20ba5a] text-slate-950 font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 shadow-lg transition active:scale-95"
-            >
-              <MessageCircle className="w-5 h-5 fill-slate-950 stroke-none" />
-              <span className="text-xs sm:text-sm">
-                {isVerified
-                  ? 'Chat with Owner on WhatsApp (Zero Brokerage)'
-                  : 'Verify ITS to Chat on WhatsApp'}
-              </span>
-            </button>
+            {/* Direct CTA: Call + WhatsApp */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              {isVerified && listing.sellerPhone && (
+                <a
+                  href={`tel:${listing.sellerPhone.replace(/[^+\d]/g, '')}`}
+                  className="w-full bg-white hover:bg-emerald-50 text-emerald-950 font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 shadow-lg transition active:scale-95 min-h-[48px]"
+                >
+                  <Phone className="w-4 h-4 text-emerald-800" />
+                  <span className="text-sm">Call Seller</span>
+                </a>
+              )}
+
+              <button
+                onClick={handleWhatsAppChat}
+                className={`w-full bg-[#25D366] hover:bg-[#20ba5a] text-slate-950 font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 shadow-lg transition active:scale-95 min-h-[48px] ${
+                  !isVerified || !listing.sellerPhone ? 'sm:col-span-2' : ''
+                }`}
+              >
+                <MessageCircle className="w-5 h-5 fill-slate-950 stroke-none" />
+                <span className="text-sm">
+                  {isVerified ? 'WhatsApp Seller' : 'Verify ITS to Contact Seller'}
+                </span>
+              </button>
+            </div>
           </div>
         </div>
       </div>

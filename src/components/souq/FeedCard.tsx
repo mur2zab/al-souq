@@ -237,7 +237,7 @@ export const FeedCard: React.FC<FeedCardProps> = ({ post }) => {
 
       {/* Caption & Tags */}
       <div className="px-4 py-3 space-y-2.5">
-        <SmartDescription content={post.caption} className="text-xs" />
+        <SmartDescription content={post.caption} className="text-sm" />
 
         {/* Category Tags */}
         <div className="flex flex-wrap gap-1.5 pt-1">

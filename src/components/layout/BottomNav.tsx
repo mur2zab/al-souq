@@ -24,29 +24,29 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, setActiveTab })
     <>
       {/* Mobile Bottom Navigation Bar */}
       <nav className="fixed bottom-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-lg border-t border-border shadow-[0_-4px_20px_rgba(0,0,0,0.06)] md:hidden">
-        <div className="flex items-center justify-around px-2 py-2 safe-area-bottom">
+        <div className="flex items-center justify-around px-1.5 py-2 safe-area-bottom">
           <button
             onClick={() => setActiveTab('FEED')}
-            className={`flex flex-col items-center gap-1 py-1 px-3 rounded-lg transition active:scale-95 ${
+            className={`flex flex-col items-center justify-center gap-1 py-1.5 px-2.5 min-h-[48px] rounded-xl transition active:scale-95 ${
               activeTab === 'FEED'
-                ? 'text-emerald-900 font-bold'
-                : 'text-slate-500 hover:text-slate-800'
+                ? 'text-emerald-900 font-bold bg-emerald-50/70'
+                : 'text-slate-600 hover:text-slate-900 font-medium'
             }`}
           >
             <Compass className={`w-5 h-5 ${activeTab === 'FEED' ? 'stroke-[2.5px] text-emerald-800' : ''}`} />
-            <span className="text-[10px]">Souq</span>
+            <span className="text-[11px] leading-none">Shop &amp; Food</span>
           </button>
 
           <button
             onClick={() => setActiveTab('CLASSIFIEDS')}
-            className={`flex flex-col items-center gap-1 py-1 px-3 rounded-lg transition active:scale-95 ${
+            className={`flex flex-col items-center justify-center gap-1 py-1.5 px-2.5 min-h-[48px] rounded-xl transition active:scale-95 ${
               activeTab === 'CLASSIFIEDS'
-                ? 'text-emerald-900 font-bold'
-                : 'text-slate-500 hover:text-slate-800'
+                ? 'text-emerald-900 font-bold bg-emerald-50/70'
+                : 'text-slate-600 hover:text-slate-900 font-medium'
             }`}
           >
             <Home className={`w-5 h-5 ${activeTab === 'CLASSIFIEDS' ? 'stroke-[2.5px] text-emerald-800' : ''}`} />
-            <span className="text-[10px]">Classifieds</span>
+            <span className="text-[11px] leading-none">Buy &amp; Sell</span>
           </button>
 
           {/* Center Action */}
@@ -57,40 +57,40 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, setActiveTab })
             <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-emerald-900 to-emerald-800 text-gold-400 flex items-center justify-center shadow-gold border-2 border-surface">
               <PlusCircle className="w-6 h-6 stroke-[2.2px]" />
             </div>
-            <span className="text-[10px] font-bold text-emerald-950 mt-0.5">Post</span>
+            <span className="text-[11px] font-bold text-emerald-950 mt-0.5 leading-none">Post Ad</span>
           </button>
 
           <button
             onClick={() => setActiveTab('SELLER_STUDIO')}
-            className={`flex flex-col items-center gap-1 py-1 px-3 rounded-lg transition active:scale-95 ${
+            className={`flex flex-col items-center justify-center gap-1 py-1.5 px-2.5 min-h-[48px] rounded-xl transition active:scale-95 ${
               activeTab === 'SELLER_STUDIO'
-                ? 'text-emerald-900 font-bold'
-                : 'text-slate-500 hover:text-slate-800'
+                ? 'text-emerald-900 font-bold bg-emerald-50/70'
+                : 'text-slate-600 hover:text-slate-900 font-medium'
             }`}
           >
             <BarChart3 className={`w-5 h-5 ${activeTab === 'SELLER_STUDIO' ? 'stroke-[2.5px] text-emerald-800' : ''}`} />
-            <span className="text-[10px]">Seller Hub</span>
+            <span className="text-[11px] leading-none">My Ads</span>
           </button>
 
           {currentUser.role === 'ADMIN' ? (
             <button
               onClick={() => setActiveTab('ADMIN_TRUST')}
-              className={`flex flex-col items-center gap-1 py-1 px-3 rounded-lg transition active:scale-95 ${
+              className={`flex flex-col items-center justify-center gap-1 py-1.5 px-2.5 min-h-[48px] rounded-xl transition active:scale-95 ${
                 activeTab === 'ADMIN_TRUST'
-                  ? 'text-emerald-900 font-bold'
-                  : 'text-slate-500 hover:text-slate-800'
+                  ? 'text-emerald-900 font-bold bg-emerald-50/70'
+                  : 'text-slate-600 hover:text-slate-900 font-medium'
               }`}
             >
               <ShieldCheck className={`w-5 h-5 ${activeTab === 'ADMIN_TRUST' ? 'stroke-[2.5px] text-emerald-800' : ''}`} />
-              <span className="text-[10px]">Admin</span>
+              <span className="text-[11px] leading-none">Admin</span>
             </button>
           ) : (
             <Link
               href="/profile"
-              className="flex flex-col items-center gap-1 py-1 px-3 rounded-lg transition active:scale-95 text-slate-500 hover:text-slate-800"
+              className="flex flex-col items-center justify-center gap-1 py-1.5 px-2.5 min-h-[48px] rounded-xl transition active:scale-95 text-slate-600 hover:text-slate-900 font-medium"
             >
               <UserIcon className="w-5 h-5" />
-              <span className="text-[10px]">Profile</span>
+              <span className="text-[11px] leading-none">Profile</span>
             </Link>
           )}
         </div>
