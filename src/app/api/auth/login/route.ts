@@ -1,65 +1,38 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { usersRepository } from '@/server/repositories/users.repository';
-import { verifyPassword, createSessionToken } from '@/server/auth/auth';
+import { getAuthProvider } from '@/server/providers/auth-provider';
 
 export async function POST(request: NextRequest) {
   try {
     const { identifier, password, otp } = await request.json();
 
-    if (!identifier) {
+    if (otp && !password) {
       return NextResponse.json(
-        { success: false, message: 'Please enter your email, phone number, or ITS ID.' },
+        {
+          success: false,
+          message: 'WhatsApp OTP is not enabled for this account. Please sign in with your password.',
+        },
         { status: 400 }
       );
     }
 
-    let userWithAuth = await usersRepository.findByEmailOrPhone(identifier);
+    const authProvider = getAuthProvider();
+    const result = await authProvider.signInWithPassword(identifier, password);
 
-    // If identifier is an 8-digit ITS
-    if (!userWithAuth && /^\d{8}$/.test(identifier.trim())) {
-      const u = await usersRepository.findByItsNumber(identifier.trim());
-      if (u) {
-        userWithAuth = await usersRepository.findByEmailOrPhone(u.email);
-      }
-    }
-
-    if (!userWithAuth) {
+    if (!result.success || !result.user || !result.token) {
       return NextResponse.json(
-        { success: false, message: 'Invalid credentials. Please verify your details and try again.' },
-        { status: 401 }
+        { success: false, message: result.message },
+        { status: result.status }
       );
     }
-
-    // Verify Password
-    let isValid = false;
-    if (password) {
-      isValid = verifyPassword(password, userWithAuth.passwordHash || '');
-    } else if (otp) {
-      // In production without an SMS/WhatsApp gateway integrated, reject arbitrary OTPs
-      return NextResponse.json(
-        { success: false, message: 'WhatsApp OTP is not enabled for this account. Please sign in with your password.' },
-        { status: 400 }
-      );
-    }
-
-    if (!isValid) {
-      return NextResponse.json(
-        { success: false, message: 'Invalid credentials. Please verify your email, phone, or password.' },
-        { status: 401 }
-      );
-    }
-
-    const { passwordHash, ...safeUser } = userWithAuth;
-    const token = createSessionToken(safeUser);
 
     const response = NextResponse.json({
       success: true,
-      message: 'Logged in successfully',
-      user: safeUser,
-      token,
+      message: result.message,
+      user: result.user,
+      token: result.token,
     });
 
-    response.cookies.set('alsouq_session', token, {
+    response.cookies.set('alsouq_session', result.token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
@@ -68,7 +41,7 @@ export async function POST(request: NextRequest) {
     });
 
     return response;
-  } catch (err) {
+  } catch {
     return NextResponse.json(
       { success: false, message: 'Login failed' },
       { status: 500 }

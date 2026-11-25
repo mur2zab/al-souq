@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
       ocrExtractedName: fullName.toUpperCase(),
       ocrConfidence: 100,
       ocrMatches: false,
-      adminNotes: 'Awaiting manual review by Jamaat Admin Desk.',
+      adminNotes: 'Awaiting manual review by Al-Souq Admin Desk.',
     });
 
     return NextResponse.json({

@@ -135,7 +135,7 @@ class ServerDatabaseStore {
         verificationStatus: 'VERIFIED',
         cityId: 'mumbai',
         cityName: 'Mumbai',
-        mohallaName: 'Mazgaon (Central Jamaat Desk)',
+        mohallaName: 'Mazgaon (Al-Souq Admin Desk)',
         role: 'ADMIN',
         createdAt: new Date().toISOString(),
         passwordHash: hashPassword(adminPassword),

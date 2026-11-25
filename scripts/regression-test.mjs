@@ -113,11 +113,42 @@ async function runTests() {
   // Test 5: User Registration with KYC Proofs
   // -------------------------------------------------------------------------
   console.log(`\n🔍 5. Registration Flow with ITS & Live Selfie Proofs`);
+  const tsSuffix = String(Date.now()).slice(-7);
   const testUserEmail = `qa.test.${Date.now()}@mumineen.org`;
-  const testPassword = 'SecurePassword!2026';
+  const testPhone = `+91 982${tsSuffix}`;
+  const testIts = `5${tsSuffix}`;
+  const testPassword = 'SecurePassword123';
   let sessionCookie = '';
 
   try {
+    // Invalid email validation
+    const resBadEmail = await fetch(`${BASE_URL}/api/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        fullName: 'Test Mumin User',
+        email: 'not-an-email',
+        phone: testPhone,
+        password: testPassword,
+        itsNumber: testIts,
+      }),
+    });
+    assert(resBadEmail.status === 400, 'Invalid email rejected with HTTP 400');
+
+    // Invalid phone validation
+    const resBadPhone = await fetch(`${BASE_URL}/api/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        fullName: 'Test Mumin User',
+        email: testUserEmail,
+        phone: '12345',
+        password: testPassword,
+        itsNumber: testIts,
+      }),
+    });
+    assert(resBadPhone.status === 400, 'Invalid phone number rejected with HTTP 400');
+
     // Missing KYC should fail
     const resFail = await fetch(`${BASE_URL}/api/auth/register`, {
       method: 'POST',
@@ -125,9 +156,9 @@ async function runTests() {
       body: JSON.stringify({
         fullName: 'Test Mumin User',
         email: testUserEmail,
-        phone: '+91 98200 99999',
+        phone: testPhone,
         password: testPassword,
-        itsNumber: '12345678',
+        itsNumber: testIts,
         // omitting itsCardProofUrl and livePhotoUrl
       }),
     });
@@ -140,12 +171,12 @@ async function runTests() {
       body: JSON.stringify({
         fullName: 'Test Mumin User',
         email: testUserEmail,
-        phone: '+91 98200 99999',
+        phone: testPhone,
         password: testPassword,
         cityId: 'mumbai',
         cityName: 'Mumbai',
-        mohallaName: 'Mazgaon',
-        itsNumber: '50294812',
+        jamaatName: 'Mazgaon Jamaat (Hasanabad / Saifee Park)',
+        itsNumber: testIts,
         itsCardProofUrl: 'https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=500',
         livePhotoUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500',
       }),
@@ -156,6 +187,45 @@ async function runTests() {
       regData.user.verificationStatus === 'PENDING',
       'New user correctly enters PENDING verification status'
     );
+
+    // Duplicate ITS registration check
+    const resDupIts = await fetch(`${BASE_URL}/api/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        fullName: 'Duplicate ITS User',
+        email: `dup.${Date.now()}@mumineen.org`,
+        phone: `+91 983${tsSuffix}`,
+        password: testPassword,
+        cityId: 'mumbai',
+        cityName: 'Mumbai',
+        jamaatName: 'Mazgaon Jamaat (Hasanabad / Saifee Park)',
+        itsNumber: testIts,
+        itsCardProofUrl: 'https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=500',
+        livePhotoUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500',
+      }),
+    });
+    assert(resDupIts.status === 409, 'Duplicate 8-digit ITS number blocked with HTTP 409 Conflict');
+
+    // Forgot Password flow
+    const resForgot = await fetch(`${BASE_URL}/api/auth/forgot-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: testUserEmail }),
+    });
+    assert(resForgot.status === 200, 'Forgot password endpoint accepts valid email (HTTP 200)');
+
+    // Wrong OTP on reset password
+    const resBadReset = await fetch(`${BASE_URL}/api/auth/reset-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: testUserEmail,
+        otp: '000000',
+        newPassword: 'NewPassword123',
+      }),
+    });
+    assert(resBadReset.status === 400, 'Invalid reset OTP rejected with HTTP 400');
 
     const rawCookie = resReg.headers.get('set-cookie');
     if (rawCookie) {

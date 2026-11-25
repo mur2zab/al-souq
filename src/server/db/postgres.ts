@@ -184,6 +184,16 @@ export async function initPostgresTables() {
         );
       `;
 
+      // 8. Temporary OTP Tokens Table (Fallback when Redis is not configured)
+      await sql`
+        CREATE TABLE IF NOT EXISTS alsouq_otp_tokens (
+          key TEXT PRIMARY KEY,
+          otp_value TEXT NOT NULL,
+          attempts INT DEFAULT 0,
+          expires_at TIMESTAMPTZ NOT NULL
+        );
+      `;
+
       // Clean up all dummy seed records from marketplace tables
       await sql`
         DELETE FROM alsouq_classifieds
@@ -239,7 +249,7 @@ export async function initPostgresTables() {
           ) VALUES (
             'admin-1', ${defaultAdminEmail}, '+919820000001', 'Community Admin',
             'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80',
-            '10000001', 'VERIFIED', 'mumbai', 'Mumbai', 'Mazgaon (Central Jamaat Desk)',
+            '10000001', 'VERIFIED', 'mumbai', 'Mumbai', 'Mazgaon (Al-Souq Admin Desk)',
             'ADMIN', NOW(), ${hashPassword(defaultAdminPassword)}
           ) ON CONFLICT (id) DO NOTHING;
         `;

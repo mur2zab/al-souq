@@ -187,6 +187,36 @@ export class UsersRepository {
     const { passwordHash, ...safeUser } = user;
     return safeUser;
   }
+
+  async updatePassword(userId: string, newPassword: string): Promise<boolean> {
+    const newHash = hashPassword(newPassword);
+    let updated = false;
+
+    const sql = getDb();
+    if (sql) {
+      try {
+        await initPostgresTables();
+        await sql`
+          UPDATE alsouq_users
+          SET password_hash = ${newHash}
+          WHERE id = ${userId}
+        `;
+        updated = true;
+      } catch (err) {
+        console.warn('Postgres updatePassword error, falling back to disk:', err);
+      }
+    }
+
+    dbStore.reloadFromDisk();
+    const user = dbStore.users.find((u) => u.id === userId);
+    if (user) {
+      user.passwordHash = newHash;
+      dbStore.persistToDisk();
+      updated = true;
+    }
+
+    return updated;
+  }
 }
 
 export const usersRepository = new UsersRepository();

@@ -70,7 +70,7 @@ export default function HomeApp() {
     );
   }
 
-  // Pending user gate: Must wait for Jamaat Admin approval before accessing marketplace
+  // Pending user gate: Must wait for Al-Souq Admin approval before accessing marketplace
   if (currentUser.verificationStatus === 'PENDING' && currentUser.role !== 'ADMIN') {
     return (
       <div className="min-h-screen bg-background flex flex-col justify-center items-center p-4 selection:bg-gold-500/30">

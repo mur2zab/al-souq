@@ -110,7 +110,7 @@ export const OnboardWaitingScreen: React.FC = () => {
               Mabrook! Your Account is Verified & Allowed
             </h3>
             <p className="text-xs text-emerald-800">
-              The Jamaat Admin Desk has approved your registration. Redirecting to the marketplace...
+              The Al-Souq Admin Desk has approved your registration. Redirecting to the marketplace...
             </p>
           </div>
         ) : (
@@ -118,13 +118,13 @@ export const OnboardWaitingScreen: React.FC = () => {
           <div className="p-4 rounded-2xl bg-amber-50/80 border border-amber-300 text-amber-950 space-y-2 text-center">
             <div className="inline-flex items-center gap-1.5 bg-amber-200/60 text-amber-950 px-3 py-1 rounded-full text-xs font-bold font-mono">
               <Clock className="w-3.5 h-3.5 text-amber-700 animate-pulse" />
-              <span>Awaiting Jamaat Admin Approval</span>
+              <span>Awaiting Al-Souq Admin Approval</span>
             </div>
             <h2 className="font-serif font-bold text-lg text-amber-950 pt-1">
               Onboarding Review in Progress
             </h2>
             <p className="text-xs text-amber-800/90 leading-relaxed">
-              Your registration has been submitted to the central Jamaat Admin Desk. For safety and authenticated community trade, an admin must verify your ITS card and live photo before full marketplace access is granted.
+              Your registration has been submitted to the Al-Souq Admin Desk. For safety and authenticated community trade, an Al-Souq Admin must verify your ITS card and live photo before full marketplace access is granted.
             </p>
           </div>
         )}
@@ -264,7 +264,7 @@ export const OnboardWaitingScreen: React.FC = () => {
             <div className="flex items-center justify-between text-amber-950 font-bold">
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-amber-600 animate-spin flex-shrink-0" />
-                <span>Jamaat Admin Desk Approval</span>
+                <span>Al-Souq Admin Desk Approval</span>
               </div>
               <span className="text-[10px] font-bold uppercase bg-amber-200 text-amber-900 px-2 py-0.5 rounded-full animate-pulse">
                 Under Review

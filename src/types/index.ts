@@ -13,6 +13,7 @@ export interface User {
   livePhotoUrl?: string;
   cityId: string;
   cityName: string;
+  jamaatName?: string;
   mohallaName: string;
   role: UserRole;
   createdAt: string;
@@ -37,6 +38,7 @@ export interface BusinessProfile {
   category: BusinessCategory;
   cityId: string;
   cityName: string;
+  jamaatName?: string;
   mohallaName: string;
   shipsGlobally: boolean;
   hasRazaBadge: boolean;
@@ -65,6 +67,7 @@ export interface FeedPost {
   todayDropDeadline?: string;
   cityId: string;
   cityName: string;
+  jamaatName?: string;
   mohallaName: string;
   likesCount: number;
   isLiked?: boolean;
@@ -116,6 +119,7 @@ export interface ClassifiedListing {
   sellerPhone: string;
   cityId: string;
   cityName: string;
+  jamaatName?: string;
   mohallaName: string;
   category: ClassifiedCategory;
   title: string;
@@ -137,6 +141,7 @@ export interface City {
   name: string;
   country: string;
   localities: string[];
+  jamaats: string[];
 }
 
 export interface StoryItem {
@@ -150,6 +155,7 @@ export interface StoryItem {
   orderDeadline: string;
   cityId: string;
   cityName: string;
+  jamaatName?: string;
   mohallaName: string;
   isAvailableToday: boolean;
   whatsappNumber: string;

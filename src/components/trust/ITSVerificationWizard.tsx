@@ -70,7 +70,7 @@ export const ITSVerificationWizard: React.FC = () => {
         ocrExtractedName: fullName.toUpperCase(),
         ocrConfidence: 100,
         ocrMatches: false,
-        adminNotes: 'Submitted for manual Jamaat Admin Desk verification.',
+        adminNotes: 'Submitted for manual Al-Souq Admin Desk verification.',
       });
 
       setStep(4);
@@ -330,7 +330,7 @@ export const ITSVerificationWizard: React.FC = () => {
                   ITS Card Submitted for Admin Review
                 </h3>
                 <p className="text-xs text-slate-600 mt-1 max-w-sm mx-auto leading-relaxed">
-                  Your verification proof has been queued for manual review by the Jamaat Admin Desk.
+                  Your verification proof has been queued for manual review by the Al-Souq Admin Desk.
                   Submissions are reviewed within 24 hours.
                 </p>
               </div>
